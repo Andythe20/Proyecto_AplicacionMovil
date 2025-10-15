@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.appshop.ui.auth.AuthScreen
 import com.example.appshop.ui.auth.SignupScreen
+import com.example.appshop.ui.screens.CreateProductScreen
 
 /**
  * Composable principal que gestiona la navegación de la aplicación.
@@ -28,7 +29,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
 
     NavHost(navController = navController, startDestination = "auth", modifier = modifier) {
         composable("auth") { AuthScreen(modifier, navController) }
-        composable("login") { LoginScreen(modifier) }
+        composable("login") { LoginScreen(modifier, navController) }
         composable("signup") {
             SignupScreen(
                 // Se ejecuta cuando el ViewModel confirma un registro exitoso.
@@ -40,6 +41,9 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     }
                 },
             )
+        }
+        composable("createProduct") {
+            CreateProductScreen()
         }
     }
 }
