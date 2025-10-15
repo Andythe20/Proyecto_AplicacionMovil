@@ -86,7 +86,7 @@ fun LoginScreen(
 
         Button(
             onClick = {
-                navController.navigate("home")
+                // TODO
             },
             modifier = Modifier.fillMaxWidth().height(60.dp),
         ) {
