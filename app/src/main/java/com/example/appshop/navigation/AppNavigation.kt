@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.appshop.ui.auth.AuthScreen
 import com.example.appshop.ui.auth.SignupScreen
+import com.example.appshop.ui.screens.CreateProductScreen
 import com.example.appshop.ui.views.HomeScreen
 
 /**
@@ -32,7 +33,8 @@ fun AppNavigation(modifier: Modifier = Modifier) {
 
     NavHost(navController = navController, startDestination = "auth", modifier = modifier) {
         composable("auth") { AuthScreen(modifier, navController) }
-
+        composable("home") { HomeScreen(modifier, navController) }
+        composable("createProduct") { CreateProductScreen() }
         // --- ANIMACIÓN PARA LA PANTALLA DE LOGIN ---
         composable(
             route = "login",
