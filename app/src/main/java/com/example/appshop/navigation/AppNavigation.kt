@@ -1,6 +1,9 @@
 package com.example.appshop.navigation
 
 import LoginScreen
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -12,7 +15,7 @@ import com.example.appshop.ui.auth.SignupScreen
 /**
  * Composable principal que gestiona la navegación de la aplicación.
  *
- * Utiliza un `NavHost` para definir un grafo de navegación, que es un mapa de todas las
+ * Utiliza un `NavHost` para definir un grafico de navegación, que es un mapa de todas las
  * pantallas (destinos) y las rutas que llevan a ellas.
  *
  * Esta es la implementación del patrón "Single-Activity Architecture", donde una única
@@ -22,20 +25,40 @@ import com.example.appshop.ui.auth.SignupScreen
  */
 @Composable
 fun AppNavigation(modifier: Modifier = Modifier) {
-    // `rememberNavController` crea y recuerda un NavController.
-    // Este controlador es el cerebro de la navegación; se usa para cambiar de pantalla (`navigate`).
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "auth", modifier = modifier) {
+
         composable("auth") { AuthScreen(modifier, navController) }
-        composable("login") { LoginScreen(modifier) }
-        composable("signup") {
+
+        // --- ANIMACIÓN PARA LA PANTALLA DE LOGIN ---
+        composable(
+            route = "login",
+            // Animación para cuando esta pantalla ENTRA en escena
+            enterTransition = {
+                slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500))
+            },
+            // Animación para cuando esta pantalla SALE de escena
+            exitTransition = {
+                slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500))
+            }
+        ) {
+            LoginScreen(modifier)
+        }
+
+        // --- ANIMACIÓN PARA LA PANTALLA DE SIGNUP ---
+        composable(
+            route = "signup",
+            enterTransition = {
+                slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500))
+            },
+            exitTransition = {
+                slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500))
+            }
+        ) {
             SignupScreen(
-                // Se ejecuta cuando el ViewModel confirma un registro exitoso.
                 onSignupSuccess = {
-                    // Navega a la pantalla de login para que el usuario pueda iniciar sesión.
                     navController.navigate("login") {
-                        // Limpiamos la pantalla de registro para que no pueda volver a ella.
                         popUpTo("signup") { inclusive = true }
                     }
                 },

@@ -20,6 +20,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.appshop.R
@@ -27,31 +28,33 @@ import com.example.appshop.R
 @Composable
 fun LoginScreen(modifier: Modifier = Modifier) {
     var email by remember { mutableStateOf("") }
-    var contrasenna by remember { mutableStateOf("") }
+    var contrasena by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier.fillMaxSize().padding(32.dp),
         verticalArrangement = Arrangement.Center,
     ) {
-        Text(
-            text = "Bienvenido!",
-            style =
-                TextStyle(
-                    fontSize = 40.sp,
-                    fontFamily = FontFamily.Monospace,
-                    fontWeight = FontWeight.SemiBold,
-                ),
-        )
-        Spacer(modifier = Modifier.height(20.dp))
+//        Text(
+//            text = "Que gusto volverte a ver!",
+//            style =
+//                TextStyle(
+//                    fontSize = 35.sp,
+//                    fontFamily = FontFamily.Monospace,
+//                    fontWeight = FontWeight.SemiBold,
+//                ),
+//        )
+//        Spacer(modifier = Modifier.height(20.dp))
 
         Text(
             text = "Inicio de sesión",
             style =
                 TextStyle(
-                    fontSize = 20.sp,
+                    fontSize = 35.sp,
                     fontFamily = FontFamily.Monospace,
                     fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
                 ),
+            modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -66,16 +69,16 @@ fun LoginScreen(modifier: Modifier = Modifier) {
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text(text = "Email adress") },
+            label = { Text(text = "Correo Electrónico.") },
             modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
         OutlinedTextField(
-            value = contrasenna,
-            onValueChange = { contrasenna = it },
-            label = { Text(text = "Password") },
+            value = contrasena,
+            onValueChange = { contrasena = it },
+            label = { Text(text = "Contraseña.") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
         )

@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -35,17 +38,21 @@ fun AuthScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
-            painter = painterResource(id = R.drawable.loginimg),
+            painter = painterResource(id = R.drawable.onlyflans_logo),
             contentDescription = "Banner",
-            modifier = Modifier.fillMaxWidth().height(300.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(300.dp)
+                .clip(RoundedCornerShape(50.dp)),
+            contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Start your shopping",
+            text = "Bienvenido a la aplicación oficial de OnlyFlans!!",
             style =
                 TextStyle(
-                    fontSize = 30.sp,
+                    fontSize = 24.sp,
                     fontFamily = FontFamily.Monospace,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
@@ -54,10 +61,11 @@ fun AuthScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Best noseke",
+            text = "Mejor repostería de Chile, est. 2025",
             style =
                 TextStyle(
                     textAlign = TextAlign.Center,
+                    fontSize = 15.sp,
                 ),
         )
         Spacer(modifier = Modifier.height(20.dp))
@@ -68,7 +76,7 @@ fun AuthScreen(
             },
             modifier = Modifier.fillMaxWidth().height(60.dp),
         ) {
-            Text(text = "Login", fontSize = 22.sp)
+            Text(text = "Iniciar sesión", fontSize = 22.sp)
         }
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -78,7 +86,7 @@ fun AuthScreen(
             },
             modifier = Modifier.fillMaxWidth().height(60.dp),
         ) {
-            Text(text = "Singup", fontSize = 22.sp)
+            Text(text = "Registrarse", fontSize = 22.sp)
         }
     }
 }
