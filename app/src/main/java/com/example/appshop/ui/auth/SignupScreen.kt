@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -78,7 +79,7 @@ fun SignupScreen(
 
     // --- DISEÑO DE LA PANTALLA (LAYOUT) ---
 
-    Column(
+    LazyColumn(
         modifier =
             modifier
                 .fillMaxSize()
@@ -95,108 +96,121 @@ fun SignupScreen(
 //                ),
 //        )
 //        Spacer(modifier = Modifier.height(20.dp))
+        item {
+            Text(
+                text = "Registro de usuario",
+                style =
+                    TextStyle(
+                        fontSize = 40.sp,
+                        fontFamily = FontFamily.Monospace,
+                        fontWeight = FontWeight.Normal,
+                        textAlign = TextAlign.Center
+                    ),
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+        }
 
-        Text(
-            text = "Registro de usuario",
-            style =
-                TextStyle(
-                    fontSize = 40.sp,
-                    fontFamily = FontFamily.Monospace,
-                    fontWeight = FontWeight.Normal,
-                    textAlign = TextAlign.Center
-                ),
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(20.dp))
+        item {
+            Image(
+                painter = painterResource(id = R.drawable.loginimg),
+                contentDescription = "Login Banner",
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+            )
 
-        Image(
-            painter = painterResource(id = R.drawable.loginimg),
-            contentDescription = "Login Banner",
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
-        )
+            Spacer(modifier = Modifier.height(20.dp))
+        }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        item {
+            // Campos de texto para la entrada de datos del usuario.
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text(text = "Dirección correo electrónico") },
+                modifier = Modifier.fillMaxWidth(),
+            )
 
-        // Campos de texto para la entrada de datos del usuario.
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text(text = "Dirección correo electrónico") },
-            modifier = Modifier.fillMaxWidth(),
-        )
+            Spacer(modifier = Modifier.height(20.dp))
+        }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        item {
+            OutlinedTextField(
+                value = nombre,
+                onValueChange = { nombre = it },
+                label = { Text(text = "Nombre usuario") },
+                modifier = Modifier.fillMaxWidth(),
+            )
 
-        OutlinedTextField(
-            value = nombre,
-            onValueChange = { nombre = it },
-            label = { Text(text = "Nombre usuario") },
-            modifier = Modifier.fillMaxWidth(),
-        )
+            Spacer(modifier = Modifier.height(20.dp))
+        }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        item {
+            OutlinedTextField(
+                value = contrasenna,
+                onValueChange = { contrasenna = it },
+                label = { Text(text = "Contraseña") },
+                modifier = Modifier.fillMaxWidth(),
+                visualTransformation = PasswordVisualTransformation(), // Oculta la contraseña
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+        }
 
-        OutlinedTextField(
-            value = contrasenna,
-            onValueChange = { contrasenna = it },
-            label = { Text(text = "Contraseña") },
-            modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation(), // Oculta la contraseña
-        )
-        Spacer(modifier = Modifier.height(20.dp))
+        item {
+            OutlinedTextField(
+                value = contrasennaValidar,
+                onValueChange = { contrasennaValidar = it },
+                label = { Text(text = "Confirmar contraseña") },
+                modifier = Modifier.fillMaxWidth(),
+                visualTransformation = PasswordVisualTransformation(),
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+        }
 
-        OutlinedTextField(
-            value = contrasennaValidar,
-            onValueChange = { contrasennaValidar = it },
-            label = { Text(text = "Confirmar contraseña") },
-            modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation(),
-        )
-        Spacer(modifier = Modifier.height(20.dp))
+        item {
+            // Botón que desencadena la lógica de registro.
+            Button(
+                onClick = {
+                    // Validación básica de los datos en la UI antes de llamar al ViewModel.
+                    if (contrasenna != contrasennaValidar) {
+                        Toast.makeText(context, "Las contraseñas no coinciden", Toast.LENGTH_SHORT)
+                            .show()
+                        return@Button // Detiene la ejecución.
+                    }
 
-        // Botón que desencadena la lógica de registro.
-        Button(
-            onClick = {
-                // Validación básica de los datos en la UI antes de llamar al ViewModel.
-                if (contrasenna != contrasennaValidar) {
-                    Toast.makeText(context, "Las contraseñas no coinciden", Toast.LENGTH_SHORT)
-                        .show()
-                    return@Button // Detiene la ejecución.
-                }
+                    if (email.isBlank() || nombre.isBlank() || contrasenna.isBlank()) {
+                        Toast.makeText(
+                            context,
+                            "Por favor, rellena todos los campos",
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                        return@Button
+                    }
 
-                if (email.isBlank() || nombre.isBlank() || contrasenna.isBlank()) {
-                    Toast.makeText(
-                        context,
-                        "Por favor, rellena todos los campos",
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                    return@Button
-                }
+                    // Llama a la función del ViewModel, delegando la lógica de negocio.
+                    viewModel.registerUser(nombre, email, contrasenna) { isSuccess, message ->
+                        // El ViewModel nos devuelve el resultado a través de este callback.
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 
-                // Llama a la función del ViewModel, delegando la lógica de negocio.
-                viewModel.registerUser(nombre, email, contrasenna) { isSuccess, message ->
-                    // El ViewModel nos devuelve el resultado a través de este callback.
-                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-
-                    if (isSuccess) {
-                        // Si el registro fue exitoso, usamos el NavController para navegar.
-                        navController.navigate("login") {
-                            // Limpiamos el historial para que el usuario no pueda volver a esta pantalla de registro.
-                            popUpTo("signup") { inclusive = true }
+                        if (isSuccess) {
+                            // Si el registro fue exitoso, usamos el NavController para navegar.
+                            navController.navigate("login") {
+                                // Limpiamos el historial para que el usuario no pueda volver a esta pantalla de registro.
+                                popUpTo("signup") { inclusive = true }
+                            }
                         }
                     }
-                }
-            },
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
-        ) {
-            Text(text = "Registrarse", fontSize = 22.sp)
+                },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(60.dp),
+            ) {
+                Text(text = "Registrarse", fontSize = 22.sp)
+            }
         }
     }
 }
