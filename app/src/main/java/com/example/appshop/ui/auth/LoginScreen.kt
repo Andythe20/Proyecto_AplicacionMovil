@@ -23,10 +23,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.appshop.R
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier) {
+fun LoginScreen(
+    modifier: Modifier = Modifier,
+    navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
 
@@ -86,7 +89,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 
         Button(
             onClick = {
-                // TODO
+                navController.navigate("home")
             },
             modifier = Modifier.fillMaxWidth().height(60.dp),
         ) {

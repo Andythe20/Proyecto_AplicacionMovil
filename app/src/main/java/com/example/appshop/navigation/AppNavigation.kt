@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.appshop.ui.auth.AuthScreen
 import com.example.appshop.ui.auth.SignupScreen
+import com.example.appshop.ui.views.HomeScreen
 
 /**
  * Composable principal que gestiona la navegación de la aplicación.
@@ -25,10 +26,11 @@ import com.example.appshop.ui.auth.SignupScreen
  */
 @Composable
 fun AppNavigation(modifier: Modifier = Modifier) {
+    // `rememberNavController` crea y recuerda un NavController.
+    // Este controlador es el cerebro de la navegación; se usa para cambiar de pantalla (`navigate`).
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "auth", modifier = modifier) {
-
         composable("auth") { AuthScreen(modifier, navController) }
 
         // --- ANIMACIÓN PARA LA PANTALLA DE LOGIN ---
@@ -43,7 +45,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500))
             }
         ) {
-            LoginScreen(modifier)
+            LoginScreen(modifier, navController)
         }
 
 
@@ -57,13 +59,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500))
             }
         ) {
-            SignupScreen(
-                onSignupSuccess = {
-                    navController.navigate("login") {
-                        popUpTo("signup") { inclusive = true }
-                    }
-                },
-            )
+            SignupScreen(modifier, navController)
         }
     }
 }
