@@ -2,10 +2,14 @@
 
 package com.example.appshop.ui.screens
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -21,11 +25,23 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 
 @Composable
 fun CreateProductScreen() {
+
+    val context = LocalContext.current
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (!isGranted) {
+            Toast.makeText(context, "Se necesita permiso de cámara para tomar fotos", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    // Estados para los campos de texto y la imagen
     var nombre by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
     var precio by remember { mutableStateOf("") }
@@ -33,8 +49,6 @@ fun CreateProductScreen() {
 
     var fotoUri by remember { mutableStateOf<Uri?>(null) }
     var fotoBitmap by remember { mutableStateOf<Bitmap?>(null) }
-
-    val context = LocalContext.current
 
     // Lanzadores
     val galeriaLauncher = rememberLauncherForActivityResult(
@@ -90,8 +104,15 @@ fun CreateProductScreen() {
 
             // === BOTONES FOTO ===
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = { camaraLauncher.launch(null) }) {
-                    Text("Abrir cámara")
+                Button(onClick = {
+                    val permissionStatus = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                    if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                        camaraLauncher.launch()
+                    } else {
+                        cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                    }
+                }) {
+                    Text("Tomar Foto")
                 }
                 Button(onClick = { galeriaLauncher.launch("image/*") }) {
                     Text("Abrir galería")
