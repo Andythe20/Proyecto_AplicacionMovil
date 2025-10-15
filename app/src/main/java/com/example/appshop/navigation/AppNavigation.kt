@@ -29,17 +29,6 @@ fun AppNavigation(modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = "auth", modifier = modifier) {
         composable("auth") { AuthScreen(modifier, navController) }
         composable("login") { LoginScreen(modifier) }
-        composable("signup") {
-            SignupScreen(
-                // Se ejecuta cuando el ViewModel confirma un registro exitoso.
-                onSignupSuccess = {
-                    // Navega a la pantalla de login para que el usuario pueda iniciar sesión.
-                    navController.navigate("login") {
-                        // Limpiamos la pantalla de registro para que no pueda volver a ella.
-                        popUpTo("signup") { inclusive = true }
-                    }
-                },
-            )
-        }
+        composable("signup") { SignupScreen( modifier, navController)}
     }
 }

@@ -27,6 +27,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.appshop.R
 import com.example.appshop.db.AppDatabase
 import com.example.appshop.db.repository.UserRepository
@@ -47,8 +48,7 @@ import com.example.appshop.viewmodel.AuthViewModelFactory
 @Composable
 fun SignupScreen(
     modifier: Modifier = Modifier,
-    // Es mejor práctica recibir lambdas de navegación en lugar del NavController completo.
-    onSignupSuccess: () -> Unit,
+    navController: NavHostController,
 ) {
     // --- INICIALIZACIÓN DE LA ARQUITECTURA MVVM ---
 
@@ -180,8 +180,11 @@ fun SignupScreen(
                     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 
                     if (isSuccess) {
-                        // Si el registro fue exitoso, llamamos a la función de navegación.
-                        onSignupSuccess()
+                        // Si el registro fue exitoso, usamos el NavController para navegar.
+                        navController.navigate("login") {
+                            // Limpiamos el historial para que el usuario no pueda volver a esta pantalla de registro.
+                            popUpTo("signup") { inclusive = true }
+                        }
                     }
                 }
             },
