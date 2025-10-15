@@ -31,10 +31,11 @@ fun HeaderSection() {
                 .size(120.dp)
         )
         Text(
-            text = "Repostería: Only Flans",
-            fontSize = 24.sp,
+            text = "Bienvenido!",
+            fontSize = 35.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(top = 10.dp)
         )
     }
 }

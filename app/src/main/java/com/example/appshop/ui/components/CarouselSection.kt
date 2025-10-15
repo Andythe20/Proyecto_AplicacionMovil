@@ -6,7 +6,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -27,10 +28,12 @@ fun CarouselSection() {
     val pagerState = rememberPagerState(pageCount = { images.size })
 
     // Efecto para cambiar de página automáticamente
-    LaunchedEffect(pagerState.currentPage) {
-        delay(3000) // 3 segundos por imagen
-        val nextPage = (pagerState.currentPage + 1) % images.size
-        pagerState.animateScrollToPage(nextPage)
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(3000) // 3 segundos por imagen
+            val nextPage = (pagerState.currentPage + 1) % images.size
+            pagerState.animateScrollToPage(nextPage)
+        }
     }
 
     HorizontalPager(
