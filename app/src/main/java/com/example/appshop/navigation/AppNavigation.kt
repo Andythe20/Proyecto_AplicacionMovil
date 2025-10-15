@@ -46,6 +46,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
             LoginScreen(modifier)
         }
 
+
         // --- ANIMACIÓN PARA LA PANTALLA DE SIGNUP ---
         composable(
             route = "signup",
