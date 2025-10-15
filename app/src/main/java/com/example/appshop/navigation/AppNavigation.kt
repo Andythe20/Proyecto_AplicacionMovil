@@ -1,6 +1,9 @@
 package com.example.appshop.navigation
 
 import LoginScreen
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -13,7 +16,7 @@ import com.example.appshop.ui.views.HomeScreen
 /**
  * Composable principal que gestiona la navegación de la aplicación.
  *
- * Utiliza un `NavHost` para definir un grafo de navegación, que es un mapa de todas las
+ * Utiliza un `NavHost` para definir un grafico de navegación, que es un mapa de todas las
  * pantallas (destinos) y las rutas que llevan a ellas.
  *
  * Esta es la implementación del patrón "Single-Activity Architecture", donde una única
@@ -29,8 +32,34 @@ fun AppNavigation(modifier: Modifier = Modifier) {
 
     NavHost(navController = navController, startDestination = "auth", modifier = modifier) {
         composable("auth") { AuthScreen(modifier, navController) }
-        composable("login") { LoginScreen(modifier, navController) }
-        composable("signup") { SignupScreen( modifier, navController)}
-        composable("home") { HomeScreen(modifier, navController) }
+
+        // --- ANIMACIÓN PARA LA PANTALLA DE LOGIN ---
+        composable(
+            route = "login",
+            // Animación para cuando esta pantalla ENTRA en escena
+            enterTransition = {
+                slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500))
+            },
+            // Animación para cuando esta pantalla SALE de escena
+            exitTransition = {
+                slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500))
+            }
+        ) {
+            LoginScreen(modifier, navController)
+        }
+
+
+        // --- ANIMACIÓN PARA LA PANTALLA DE SIGNUP ---
+        composable(
+            route = "signup",
+            enterTransition = {
+                slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500))
+            },
+            exitTransition = {
+                slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500))
+            }
+        ) {
+            SignupScreen(modifier, navController)
+        }
     }
 }

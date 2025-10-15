@@ -24,6 +24,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -84,25 +85,27 @@ fun SignupScreen(
                 .padding(32.dp),
         verticalArrangement = Arrangement.Center,
     ) {
+//        Text(
+//            text = "Bienvenido!",
+//            style =
+//                TextStyle(
+//                    fontSize = 40.sp,
+//                    fontFamily = FontFamily.Monospace,
+//                    fontWeight = FontWeight.SemiBold,
+//                ),
+//        )
+//        Spacer(modifier = Modifier.height(20.dp))
+
         Text(
-            text = "Bienvenido!",
+            text = "Registro de usuario",
             style =
                 TextStyle(
                     fontSize = 40.sp,
                     fontFamily = FontFamily.Monospace,
-                    fontWeight = FontWeight.SemiBold,
-                ),
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text(
-            text = "Registro nuevo usuario",
-            style =
-                TextStyle(
-                    fontSize = 20.sp,
-                    fontFamily = FontFamily.Monospace,
                     fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center
                 ),
+            modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -121,7 +124,7 @@ fun SignupScreen(
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text(text = "Email address") },
+            label = { Text(text = "Dirección correo electrónico") },
             modifier = Modifier.fillMaxWidth(),
         )
 
@@ -130,7 +133,7 @@ fun SignupScreen(
         OutlinedTextField(
             value = nombre,
             onValueChange = { nombre = it },
-            label = { Text(text = "Name") },
+            label = { Text(text = "Nombre usuario") },
             modifier = Modifier.fillMaxWidth(),
         )
 
@@ -139,7 +142,7 @@ fun SignupScreen(
         OutlinedTextField(
             value = contrasenna,
             onValueChange = { contrasenna = it },
-            label = { Text(text = "Password") },
+            label = { Text(text = "Contraseña") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(), // Oculta la contraseña
         )
@@ -148,7 +151,7 @@ fun SignupScreen(
         OutlinedTextField(
             value = contrasennaValidar,
             onValueChange = { contrasennaValidar = it },
-            label = { Text(text = "Repeat password") },
+            label = { Text(text = "Confirmar contraseña") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
         )
@@ -193,7 +196,7 @@ fun SignupScreen(
                     .fillMaxWidth()
                     .height(60.dp),
         ) {
-            Text(text = "Sign Up", fontSize = 22.sp)
+            Text(text = "Registrarse", fontSize = 22.sp)
         }
     }
 }
