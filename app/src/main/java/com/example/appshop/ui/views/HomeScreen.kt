@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,7 +22,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -33,6 +37,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.appshop.db.AppDatabase
 import com.example.appshop.db.repository.UserRepository
+import com.example.appshop.ui.components.AppDropdownMenu
 import com.example.appshop.ui.components.CarouselSection
 import com.example.appshop.ui.components.HeaderSection
 import com.example.appshop.viewmodel.AuthViewModel
@@ -58,6 +63,9 @@ fun HomeScreen(
     //comportamiento del scroll al topBar
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
+    // Creamos una variable de estado para saber si el menú está abierto o cerrado.
+    var menuAbierto by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -68,14 +76,23 @@ fun HomeScreen(
                     )
                 },
                 scrollBehavior = scrollBehavior,
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigate("auth") }) {
+                actions = {
+                    // Este IconButton ahora solo abre el menú.
+                    IconButton(onClick = { menuAbierto = true }) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Localized description"
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Abrir menú de opciones"
                         )
                     }
-                }
+
+                    // Aquí llamamos a nuestro componente de menú personalizado.
+                    AppDropdownMenu(
+                        expanded = menuAbierto,
+                        onDismissRequest = { menuAbierto = false },
+                        navController = navController
+                    )
+                },
+                modifier = Modifier.height(100.dp)
             )
         }
     )
@@ -83,7 +100,7 @@ fun HomeScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 16.dp, top = 100.dp),
+                .padding(padding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
