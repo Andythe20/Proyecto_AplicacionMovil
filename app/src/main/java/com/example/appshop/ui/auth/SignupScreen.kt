@@ -2,13 +2,15 @@ package com.example.appshop.ui.auth
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -24,6 +26,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,6 +37,10 @@ import com.example.appshop.db.AppDatabase
 import com.example.appshop.db.repository.UserRepository
 import com.example.appshop.viewmodel.AuthViewModel
 import com.example.appshop.viewmodel.AuthViewModelFactory
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 
 /**
  * Composable que representa la pantalla de registro de nuevos usuarios.
@@ -76,31 +83,29 @@ fun SignupScreen(
     var contrasenna by remember { mutableStateOf("") }
     var contrasennaValidar by remember { mutableStateOf("") }
 
-    // --- DISEÑO DE LA PANTALLA (LAYOUT) ---
+// Si el valor es 'null' -> no hay error.
+// Si tiene un texto -> hay un error y ese es el mensaje a mostrar.
+    var nombreError by remember { mutableStateOf<String?>(null) }
+    var emailError by remember { mutableStateOf<String?>(null) }
+    var contrasennaError by remember { mutableStateOf<String?>(null) }
+    var contrasennaValidarError by remember { mutableStateOf<String?>(null) }
 
+    var contrasennaVisible by remember { mutableStateOf(false) }
+    var contrasennaValidarVisible by remember { mutableStateOf(false) }
+
+    // --- DISEÑO DE LA PANTALLA (LAYOUT) ---
     Column(
         modifier =
             modifier
                 .fillMaxSize()
-                .padding(32.dp),
-        verticalArrangement = Arrangement.Center,
+                .padding(20.dp)
+                .verticalScroll(rememberScrollState()),
     ) {
-//        Text(
-//            text = "Bienvenido!",
-//            style =
-//                TextStyle(
-//                    fontSize = 40.sp,
-//                    fontFamily = FontFamily.Monospace,
-//                    fontWeight = FontWeight.SemiBold,
-//                ),
-//        )
-//        Spacer(modifier = Modifier.height(20.dp))
-
         Text(
             text = "Registro de usuario",
             style =
                 TextStyle(
-                    fontSize = 40.sp,
+                    fontSize = 35.sp,
                     fontFamily = FontFamily.Monospace,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center
@@ -123,70 +128,166 @@ fun SignupScreen(
         // Campos de texto para la entrada de datos del usuario.
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it },
+            // Cuando el usuario escribe, limpiamos el error para que desaparezca al corregirlo.
+            onValueChange = {
+                email = it
+                emailError = null    },
             label = { Text(text = "Dirección correo electrónico") },
             modifier = Modifier.fillMaxWidth(),
+
+            isError = emailError != null,
+            // Muestra el mensaje de error debajo si existe.
+            supportingText = {
+                if (emailError != null) {
+                    Text(text = emailError!!)
+                }
+            }
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
         OutlinedTextField(
-            value = nombre,
-            onValueChange = { nombre = it },
+            value = nombre,onValueChange = {
+                nombre = it
+                nombreError = null
+            },
             label = { Text(text = "Nombre usuario") },
             modifier = Modifier.fillMaxWidth(),
+            isError = nombreError != null,
+            supportingText = {
+                if (nombreError != null) {
+                    Text(text = nombreError!!)
+                }
+            }
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
         OutlinedTextField(
             value = contrasenna,
-            onValueChange = { contrasenna = it },
+            onValueChange = {
+                contrasenna = it
+                contrasennaError = null
+            },
             label = { Text(text = "Contraseña") },
             modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation(), // Oculta la contraseña
+            isError = contrasennaError != null,
+            supportingText = {
+                if (contrasennaError != null) {
+                    Text(text = contrasennaError!!)
+                }
+            },
+            // --- Lógica de visibilidad ---
+            visualTransformation = if (contrasennaVisible) {
+                // Si contrasennaVisible es true, no aplicamos ninguna transformación (texto visible).
+                VisualTransformation.None
+            } else {
+                // Si es false, aplicamos la transformación de contraseña (oculta el texto).
+                PasswordVisualTransformation()
+            },
+            // --- Icono para cambiar la visibilidad ---
+            trailingIcon = {
+                val image = if (contrasennaVisible)
+                    Icons.Filled.Visibility
+                else Icons.Filled.VisibilityOff
+
+                // Descripción para accesibilidad
+                val description = if (contrasennaVisible) "Ocultar contraseña" else "Mostrar contraseña"
+
+                IconButton(onClick = { contrasennaVisible = !contrasennaVisible }) {
+                    Icon(imageVector = image, contentDescription = description)
+                }
+            }
         )
+
+
         Spacer(modifier = Modifier.height(20.dp))
 
         OutlinedTextField(
             value = contrasennaValidar,
-            onValueChange = { contrasennaValidar = it },
+            onValueChange = {
+                contrasennaValidar = it
+                contrasennaValidarError = null},
             label = { Text(text = "Confirmar contraseña") },
             modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation(),
+            isError = contrasennaValidarError != null,
+            supportingText = {
+                if (contrasennaValidarError != null) {
+                    Text(text = contrasennaValidarError!!)
+                }
+            },
+            // --- Lógica de visibilidad ---
+            visualTransformation = if (contrasennaValidarVisible) {
+                VisualTransformation.None
+            } else {
+                PasswordVisualTransformation()
+            },
+            // --- Icono para cambiar la visibilidad ---
+            trailingIcon = {
+                val image = if (contrasennaValidarVisible)
+                    Icons.Filled.Visibility
+                else Icons.Filled.VisibilityOff
+
+                val description = if (contrasennaValidarVisible) "Ocultar contraseña" else "Mostrar contraseña"
+
+                IconButton(onClick = { contrasennaValidarVisible = !contrasennaValidarVisible }) {
+                    Icon(imageVector = image, contentDescription = description)
+                }
+            }
         )
+
+
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Botón que desencadena la lógica de registro.
         Button(
             onClick = {
-                // Validación básica de los datos en la UI antes de llamar al ViewModel.
-                if (contrasenna != contrasennaValidar) {
-                    Toast.makeText(context, "Las contraseñas no coinciden", Toast.LENGTH_SHORT)
-                        .show()
-                    return@Button // Detiene la ejecución.
+                // Limpiamos todos los errores anteriores antes de empezar una nueva validación
+                nombreError = null
+                emailError = null
+                contrasennaError = null
+                contrasennaValidarError = null
+
+                // Validación del Nombre
+                if (nombre.isBlank()) {
+                    nombreError = "El nombre no puede estar vacío"
                 }
 
-                if (email.isBlank() || nombre.isBlank() || contrasenna.isBlank()) {
-                    Toast.makeText(
-                        context,
-                        "Por favor, rellena todos los campos",
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                    return@Button
+                // Validación del Email
+                if (email.isBlank()) {
+                    emailError = "El correo no puede estar vacío"
+                } else if (!formatoCorreo(email)) {
+                    emailError = "El formato del correo no es válido"
                 }
 
-                // Llama a la función del ViewModel, delegando la lógica de negocio.
-                viewModel.registerUser(nombre, email, contrasenna) { isSuccess, message ->
-                    // El ViewModel nos devuelve el resultado a través de este callback.
-                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                // Validación de la Contraseña
+                if (contrasenna.isBlank()) {
+                    contrasennaError = "La contraseña no puede estar vacía"
+                } else if (!largoContrasena(contrasenna)) {
+                    contrasennaError = "La contraseña debe tener al menos 6 caracteres"
+                }
 
-                    if (isSuccess) {
-                        // Si el registro fue exitoso, usamos el NavController para navegar.
-                        navController.navigate("login") {
-                            // Limpiamos el historial para que el usuario no pueda volver a esta pantalla de registro.
-                            popUpTo("signup") { inclusive = true }
+                // Validación de la Confirmación de Contraseña
+                if (contrasennaValidar.isBlank()) {
+                    contrasennaValidarError = "Debes confirmar la contraseña"
+                } else if (!validarContrasena(contrasenna, contrasennaValidar)) {
+                    contrasennaValidarError = "Las contraseñas no coinciden"
+                }
+
+                // Si después de todas las validaciones, NINGUNA variable de error
+                // tiene un mensaje, significa que todo es válido.
+                val esValido = nombreError == null &&
+                        emailError == null &&
+                        contrasennaError == null &&
+                        contrasennaValidarError == null
+
+                if (esValido) {
+//                     Si todo esta correcto, se registra el usuario.
+                    viewModel.registerUser(nombre, email, contrasenna) { isSuccess, message ->
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                        if (isSuccess) {
+                            navController.navigate("login") {
+                                popUpTo("signup") { inclusive = true }
+                            }
                         }
                     }
                 }
@@ -198,5 +299,6 @@ fun SignupScreen(
         ) {
             Text(text = "Registrarse", fontSize = 22.sp)
         }
+
     }
 }

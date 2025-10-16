@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,17 +38,6 @@ fun LoginScreen(
         modifier = modifier.fillMaxSize().padding(32.dp),
         verticalArrangement = Arrangement.Center,
     ) {
-//        Text(
-//            text = "Que gusto volverte a ver!",
-//            style =
-//                TextStyle(
-//                    fontSize = 35.sp,
-//                    fontFamily = FontFamily.Monospace,
-//                    fontWeight = FontWeight.SemiBold,
-//                ),
-//        )
-//        Spacer(modifier = Modifier.height(20.dp))
-
         Text(
             text = "Inicio de sesión",
             style =

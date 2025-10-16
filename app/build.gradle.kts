@@ -45,10 +45,14 @@ dependencies {
 
     implementation("com.google.accompanist:accompanist-pager:0.32.0")
 
+    implementation("androidx.compose.material:material-icons-extended-android:1.6.7")
+
+
     implementation("androidx.room:room-runtime:2.6.1")
     implementation(libs.androidx.media3.database)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.espresso.core)
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
 
