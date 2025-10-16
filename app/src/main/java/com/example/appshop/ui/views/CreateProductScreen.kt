@@ -37,6 +37,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import coil.compose.rememberAsyncImagePainter
+import com.example.appshop.utils.validateInputText
+import com.example.appshop.utils.validateIntField
 
 
 @Composable
@@ -51,7 +53,11 @@ fun CreateProductScreen() {
     var precio by remember { mutableStateOf("") }
     var fotoUri by remember { mutableStateOf<Uri?>(null) }
 
-    // === Solicitud de permisos de cámara ===
+    // === Estados de error ===
+    var nombreError by remember { mutableStateOf<String?>(null)}
+    var precioError by remember { mutableStateOf<String?>(null)}
+
+    // === Permisos y Lauchers ===
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -91,7 +97,7 @@ fun CreateProductScreen() {
                     .padding(padding)
                     .padding(16.dp)
                     .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -99,7 +105,6 @@ fun CreateProductScreen() {
             // === Vista previa ===
             Box(
                 modifier = Modifier
-                    //.size(180.dp)
                     .fillMaxWidth()
                     .aspectRatio(1f)
                     .clip(RoundedCornerShape(12.dp))
@@ -154,37 +159,79 @@ fun CreateProductScreen() {
                 }
             }
 
-            // === Campos de texto ===
+            // === Campo: Nombre ===
             OutlinedTextField(
                 value = nombre,
-                onValueChange = { nombre = it },
+                onValueChange = {
+                    nombre = it
+                    nombreError = validateInputText("Nombre", it, 3)
+                },
                 label = { Text("Nombre") },
+                isError = nombreError != null,
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
 
+            // Mensaje al usuario en caso de no cumplir validación
+            if(nombreError != null){
+                Text(
+                    text = nombreError!!,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.align(Alignment.Start)
+                )
+            }
+
             OutlinedTextField(
                 value = descripcion,
-                onValueChange = { descripcion = it },
+                onValueChange = {
+                    descripcion = it
+                },
                 label = { Text("Descripción") },
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
                 value = precio,
-                onValueChange = { if (it.matches(Regex("^\\d*\\.?\\d*\$"))) precio = it },
+                onValueChange = {
+                    input ->
+                    if (input.matches(Regex("^\\d*\$"))){
+                        precio = input
+                        precioError = validateIntField("Precio", input, 0)
+                    }
+                },
                 label = { Text("Precio") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 modifier = Modifier.fillMaxWidth()
             )
 
+            // Mensaje en caso de no cumplir validación
+            if(precioError != null){
+                Text(
+                    text = precioError!!,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.align(Alignment.Start)
+                )
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Formulario válido solo si no hay errores y los campos obligatorios no están vacíos
+            var formValid: Boolean = nombreError == null &&
+                    precioError == null &&
+                    nombre.trim().isNotEmpty() &&
+                    precio.trim().isNotEmpty()
+
+            // Botón de guardar producto
             Button(
                 onClick = {
                     Toast.makeText(context, "Producto guardado (solo UI)", Toast.LENGTH_LONG).show()
                     // TODO: Guardar en base de datos
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = formValid // Habilitado solo si el formulario es válido
             ) {
                 Icon(
                     imageVector = Icons.Filled.Save,
