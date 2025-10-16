@@ -21,7 +21,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -131,9 +134,22 @@ fun CreateProductScreen() {
                         cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                     }
                 }) {
+                    Icon(
+                        imageVector = Icons.Filled.CameraAlt,
+                        contentDescription = "Cámara",
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text("Tomar Foto")
                 }
-                Button(onClick = { galeriaLauncher.launch("image/*") }) {
+                Button(onClick = { galeriaLauncher.launch("image/*") })
+                {
+                    Icon(
+                        imageVector = Icons.Filled.PhotoLibrary,
+                        contentDescription = "Galería",
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text("Abrir Galería")
                 }
             }
@@ -170,6 +186,12 @@ fun CreateProductScreen() {
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
+                Icon(
+                    imageVector = Icons.Filled.Save,
+                    contentDescription = "Guardar",
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
                 Text("Guardar Producto")
             }
         }
