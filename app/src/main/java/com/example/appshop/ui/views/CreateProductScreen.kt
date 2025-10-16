@@ -20,6 +20,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -32,7 +34,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import coil.compose.rememberAsyncImagePainter
-import androidx.compose.ui.res.painterResource
 
 
 @Composable
@@ -110,7 +111,13 @@ fun CreateProductScreen() {
                         contentScale = ContentScale.Crop
                     )
                 } else {
-                    Text("Sin foto", style = MaterialTheme.typography.bodyMedium)
+                    //Text("Sin foto", style = MaterialTheme.typography.bodyMedium)
+                    Icon(
+                        imageVector = Icons.Filled.Image,
+                        contentDescription = "Sin foto",
+                        modifier = Modifier.size(92.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
 
