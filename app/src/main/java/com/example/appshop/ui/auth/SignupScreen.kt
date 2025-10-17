@@ -59,23 +59,12 @@ import androidx.lint.kotlin.metadata.Visibility
 fun SignupScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
+    viewModel: AuthViewModel
 ) {
     // --- INICIALIZACIÓN DE LA ARQUITECTURA MVVM ---
 
     // 1. Obtenemos el Context, necesario para crear la base de datos.
     val context = LocalContext.current
-
-    // 2. Creamos las instancias de la base de datos y el repositorio.
-    //    Usamos 'remember' para que estas instancias no se recreen en cada recomposición,
-    //    lo cual sería muy ineficiente.
-    val db = remember { AppDatabase.getDatabase(context) }
-    val repo = remember { UserRepository(db.userDao()) }
-
-    // 3. Obtenemos el ViewModel usando la Factory.
-    //    Le pasamos la fábrica que sabe cómo construir nuestro AuthViewModel (dándole el repositorio).
-    //    Jetpack Compose se encarga de que este ViewModel sobreviva a cambios de configuración
-    //    (como rotar la pantalla).
-    val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(repo))
 
     // --- ESTADOS DE LA UI ---
 

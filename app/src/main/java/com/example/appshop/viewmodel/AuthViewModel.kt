@@ -1,5 +1,8 @@
 package com.example.appshop.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.appshop.db.entities.User
@@ -20,6 +23,14 @@ import kotlinx.coroutines.withContext
  *                   lo que hace que el ViewModel sea más fácil de probar y más desacoplado.
  */
 class AuthViewModel(private val repository: UserRepository) : ViewModel() {
+
+    // --- ESTADO PARA GUARDAR AL USUARIO LOGUEADO ---
+    // Usamos 'by mutableStateOf' para que la UI de Compose reaccione a los cambios.
+    // Es de tipo User? (puede ser nulo) porque al principio nadie ha iniciado sesión.
+    var loggedInUser by mutableStateOf<User?>(null)
+        private set // 'private set' significa que solo el ViewModel puede cambiar su valor,
+    // pero cualquiera puede leerlo.
+
 
     /**
      * Registra un nuevo usuario en el sistema.
@@ -72,6 +83,8 @@ class AuthViewModel(private val repository: UserRepository) : ViewModel() {
 
             withContext(Dispatchers.Main) {
                 if (user != null) {
+                    // Guardamos el usuaruio en el estado 'loggedInUser'.
+                    loggedInUser = user
                     onResult(true, "Inicio de sesión exitoso.")
                 } else {
                     onResult(false, "Correo o contraseña incorrectos.")
