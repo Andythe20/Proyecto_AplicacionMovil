@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -89,7 +90,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         }
         composable("createProfile") {
             MainLayout(navController) { padding ->
-                CreateProfileScreen()
+                CreateProfileScreen(modifier = Modifier.padding(padding))
             }
         }
     }

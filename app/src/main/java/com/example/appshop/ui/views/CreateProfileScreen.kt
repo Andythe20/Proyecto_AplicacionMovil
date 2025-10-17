@@ -62,7 +62,7 @@ fun CreateProfileScreen(modifier: Modifier = Modifier) {
     var precio by remember { mutableStateOf("") }
     var fotoUri by remember { mutableStateOf<Uri?>(null) }
 
-    var usernameError by remember { mutableStateOf<String?>(null) }
+    var UsernameError by remember { mutableStateOf<String?>(null) }
     var precioError by remember { mutableStateOf<String?>(null) }
 
     // === Permisos y launchers ===
@@ -98,9 +98,11 @@ fun CreateProfileScreen(modifier: Modifier = Modifier) {
 
     Column(
         modifier = modifier
-            .padding(16.dp)
+
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp) //
+            .padding(top = 16.dp, bottom = 32.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -142,12 +144,20 @@ fun CreateProfileScreen(modifier: Modifier = Modifier) {
                     cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                 }
             }) {
-                Icon(Icons.Filled.CameraAlt, contentDescription = "Cámara", modifier = Modifier.size(18.dp))
+                Icon(
+                    Icons.Filled.CameraAlt,
+                    contentDescription = "Cámara",
+                    modifier = Modifier.size(18.dp)
+                )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Tomar Foto")
             }
             Button(onClick = { galeriaLauncher.launch("image/*") }) {
-                Icon(Icons.Filled.PhotoLibrary, contentDescription = "Galería", modifier = Modifier.size(18.dp))
+                Icon(
+                    Icons.Filled.PhotoLibrary,
+                    contentDescription = "Galería",
+                    modifier = Modifier.size(18.dp)
+                )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Abrir Galería")
             }
@@ -158,16 +168,16 @@ fun CreateProfileScreen(modifier: Modifier = Modifier) {
             value = username,
             onValueChange = {
                 username = it
-                usernameError = validateInputText("Usuario", it, 3)
+                UsernameError = validateInputText("Usuario", it, 3)
             },
             label = { Text("Usuario") },
-            isError = usernameError != null,
+            isError = UsernameError != null,
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
-        if (usernameError != null) {
+        if (UsernameError != null) {
             Text(
-                text = usernameError!!,
+                text = UsernameError!!,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.align(Alignment.Start)
@@ -205,7 +215,7 @@ fun CreateProfileScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        val formValid = usernameError == null &&
+        val formValid = UsernameError == null &&
                 precioError == null &&
                 username.trim().isNotEmpty() &&
                 precio.trim().isNotEmpty()
