@@ -6,7 +6,9 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -15,6 +17,15 @@ import com.example.appshop.ui.auth.SignupScreen
 import com.example.appshop.ui.components.MainLayout
 import com.example.appshop.ui.views.CreateProductScreen
 import com.example.appshop.ui.views.HomeScreen
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.appshop.db.AppDatabase
+import com.example.appshop.db.repository.UserRepository
+import com.example.appshop.viewmodel.AuthViewModel
+import com.example.appshop.viewmodel.AuthViewModelFactory
+
+
 
 /**
  * Composable principal que gestiona la navegación de la aplicación.
@@ -31,6 +42,13 @@ import com.example.appshop.ui.views.HomeScreen
 fun AppNavigation(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
 
+    // --- CREAMOS EL VIEWMODEL UNA SOLA VEZ AQUÍ ---
+    val context = LocalContext.current
+    // 'remember' es clave para que no se recree en cada redibujado
+    val db = remember { AppDatabase.getDatabase(context) }
+    val repo = remember { UserRepository(db.userDao()) }
+    val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(repo))
+
     NavHost(navController = navController, startDestination = "auth", modifier = modifier) {
 
         // --- Pantallas sin Drawer (auth/login/signup) ---
@@ -39,17 +57,17 @@ fun AppNavigation(modifier: Modifier = Modifier) {
             route = "login",
             enterTransition = { slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) },
             exitTransition = { slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500)) }
-        ) { LoginScreen(modifier, navController) }
+        ) { LoginScreen(modifier, navController, viewModel) }
         composable(
             route = "signup",
             enterTransition = { slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) },
             exitTransition = { slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500)) }
-        ) { SignupScreen(modifier, navController) }
+        ) { SignupScreen(modifier, navController, viewModel) }
 
         // --- Pantallas con Drawer lateral ---
         composable("home") {
             MainLayout(navController) { padding ->
-                HomeScreen(modifier.padding(padding), navController)
+                HomeScreen(modifier.padding(padding), navController, viewModel)
             }
         }
         composable("createProduct") {

@@ -48,23 +48,20 @@ import com.example.appshop.viewmodel.AuthViewModelFactory
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    viewModel: AuthViewModel
 ){
-    // Obtenemos el context para crear la base de datos
-    val context = LocalContext.current
-
-    // instancias de la DB y el repositorio
-    val db = remember { AppDatabase.getDatabase(context) }
-    val repo = remember { UserRepository(db.userDao()) }
-
-    //obtener el ViewModel
-    val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(repo))
 
     //comportamiento del scroll al topBar
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     // Creamos una variable de estado para saber si el menú está abierto o cerrado.
     var menuAbierto by remember { mutableStateOf(false) }
+
+    // --- OBTENEMOS EL USUARIO Y SU NOMBRE ---
+    val currentUser = viewModel.loggedInUser
+    // Si algo falla, muestra "Usuario".
+    val username = currentUser?.name ?: "Usuario"
 
     Scaffold(
         topBar = {
@@ -105,7 +102,7 @@ fun HomeScreen(
         ) {
             item {
                 // HEADER
-                HeaderSection()
+                HeaderSection(username)
             }
 
             item {
@@ -138,6 +135,11 @@ fun HomeScreenPreview() {
     // ninguna navegación real en la preview, pero permite que el Composable se renderice.
     val navController = rememberNavController()
 
+    val context = LocalContext.current
+    val db = AppDatabase.getDatabase(context)
+    val repo = UserRepository(db.userDao())
+    val fakeViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(repo))
+
     // Llamamos a nuestro Composable `HomeScreen` pasándole el navController de prueba.
-    HomeScreen(navController = navController)
+    HomeScreen(navController = navController, viewModel = fakeViewModel)
 }
