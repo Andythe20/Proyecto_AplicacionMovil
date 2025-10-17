@@ -45,16 +45,7 @@ import com.example.appshop.viewmodel.AuthViewModelFactory
 fun LoginScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    viewModel: AuthViewModel = viewModel(
-        factory = AuthViewModelFactory(
-            UserRepository(
-                AppDatabase.getDatabase(LocalContext.current).userDao()
-            )
-        )
-//        En resumen se está creando una cadena de dependencias para que la
-//    pantalla reciba un AuthViewModel completamente funcional y listo para hablar con la base de datos.
-
-    )
+    viewModel: AuthViewModel
 ) {
     var email by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
@@ -89,7 +80,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         Image(
-            painter = painterResource(id = R.drawable.loginimg),
+            painter = painterResource(id = R.drawable.iniciar_sesion),
             contentDescription = "Login Banner",
             modifier = Modifier
                 .fillMaxWidth()
@@ -105,7 +96,7 @@ fun LoginScreen(
                 emailError = null // Limpia el error del campo al escribir
                 errorGeneral = null // Limpia el error general
             },
-            label = { Text(text = "Correo Electrónico.") },
+            label = { Text(text = "Correo Electrónico") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
 

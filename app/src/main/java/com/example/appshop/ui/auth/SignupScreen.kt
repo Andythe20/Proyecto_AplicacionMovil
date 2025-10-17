@@ -59,23 +59,12 @@ import androidx.lint.kotlin.metadata.Visibility
 fun SignupScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
+    viewModel: AuthViewModel
 ) {
     // --- INICIALIZACIÓN DE LA ARQUITECTURA MVVM ---
 
     // 1. Obtenemos el Context, necesario para crear la base de datos.
     val context = LocalContext.current
-
-    // 2. Creamos las instancias de la base de datos y el repositorio.
-    //    Usamos 'remember' para que estas instancias no se recreen en cada recomposición,
-    //    lo cual sería muy ineficiente.
-    val db = remember { AppDatabase.getDatabase(context) }
-    val repo = remember { UserRepository(db.userDao()) }
-
-    // 3. Obtenemos el ViewModel usando la Factory.
-    //    Le pasamos la fábrica que sabe cómo construir nuestro AuthViewModel (dándole el repositorio).
-    //    Jetpack Compose se encarga de que este ViewModel sobreviva a cambios de configuración
-    //    (como rotar la pantalla).
-    val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(repo))
 
     // --- ESTADOS DE LA UI ---
 
@@ -133,7 +122,8 @@ fun SignupScreen(
             // Cuando el usuario escribe, limpiamos el error para que desaparezca al corregirlo.
             onValueChange = {
                 email = it
-                emailError = null    },
+                emailError = null
+            },
             label = { Text(text = "Dirección correo electrónico") },
             modifier = Modifier.fillMaxWidth(),
 
@@ -149,7 +139,7 @@ fun SignupScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         OutlinedTextField(
-            value = nombre,onValueChange = {
+            value = nombre, onValueChange = {
                 nombre = it
                 nombreError = null
             },
@@ -194,7 +184,8 @@ fun SignupScreen(
                 else Icons.Filled.VisibilityOff
 
                 // Descripción para accesibilidad
-                val description = if (contrasennaVisible) "Ocultar contraseña" else "Mostrar contraseña"
+                val description =
+                    if (contrasennaVisible) "Ocultar contraseña" else "Mostrar contraseña"
 
                 IconButton(onClick = { contrasennaVisible = !contrasennaVisible }) {
                     Icon(imageVector = image, contentDescription = description)
@@ -209,7 +200,8 @@ fun SignupScreen(
             value = contrasennaValidar,
             onValueChange = {
                 contrasennaValidar = it
-                contrasennaValidarError = null},
+                contrasennaValidarError = null
+            },
             label = { Text(text = "Confirmar contraseña") },
             modifier = Modifier.fillMaxWidth(),
             isError = contrasennaValidarError != null,
@@ -230,7 +222,8 @@ fun SignupScreen(
                     Icons.Filled.Visibility
                 else Icons.Filled.VisibilityOff
 
-                val description = if (contrasennaValidarVisible) "Ocultar contraseña" else "Mostrar contraseña"
+                val description =
+                    if (contrasennaValidarVisible) "Ocultar contraseña" else "Mostrar contraseña"
 
                 IconButton(onClick = { contrasennaValidarVisible = !contrasennaValidarVisible }) {
                     Icon(imageVector = image, contentDescription = description)

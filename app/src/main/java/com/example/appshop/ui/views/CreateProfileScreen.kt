@@ -17,14 +17,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.PhotoLibrary
-import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -40,24 +37,35 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.appshop.utils.validateInputText
 import com.example.appshop.utils.validateIntField
 
+// === Scaffold con TopAppBar incluido ===
+@Composable
+fun CreateProfileView() {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Crear Perfil") }
+            )
+        }
+    ) { innerPadding -> // padding del Scaffold
+        CreateProfileScreen(
+            modifier = Modifier.padding(innerPadding)
+        )
+    }
+}
 
 @Composable
-fun CreateProductScreen(modifier: Modifier = Modifier) {
-
-    // Contexto de la aplicación
+fun CreateProfileScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
 
-    // === Estados de los campos ===
-    var nombre by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
     var precio by remember { mutableStateOf("") }
     var fotoUri by remember { mutableStateOf<Uri?>(null) }
 
-    // === Estados de error ===
-    var nombreError by remember { mutableStateOf<String?>(null) }
+    var UsernameError by remember { mutableStateOf<String?>(null) }
     var precioError by remember { mutableStateOf<String?>(null) }
 
-    // === Permisos y Lauchers ===
+    // === Permisos y launchers ===
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -70,22 +78,17 @@ fun CreateProductScreen(modifier: Modifier = Modifier) {
         }
     }
 
-    // === Selector de galería ===
     val galeriaLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri ->
-        fotoUri = uri // reemplaza lo que haya
-    }
+    ) { uri -> fotoUri = uri }
 
-    // === Cámara ===
     val camaraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicturePreview()
     ) { bitmap ->
         if (bitmap != null) {
-            // Guardar en galería y obtener su Uri
             val savedUri = saveBitmapToGallery(context, bitmap)
             if (savedUri != null) {
-                fotoUri = savedUri // reemplaza lo que haya
+                fotoUri = savedUri
                 Toast.makeText(context, "Foto guardada en galería", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, "Error al guardar la foto", Toast.LENGTH_SHORT).show()
@@ -93,22 +96,23 @@ fun CreateProductScreen(modifier: Modifier = Modifier) {
         }
     }
 
-
     Column(
-        modifier = Modifier
-            .padding(16.dp)
+        modifier = modifier
+
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp) //
+            .padding(top = 16.dp, bottom = 32.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(24.dp))
 
-        // === Vista previa ===
+        // === Vista previa circular ===
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-                .clip(RoundedCornerShape(12.dp))
+                .size(180.dp)
+                .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center
         ) {
@@ -120,7 +124,6 @@ fun CreateProductScreen(modifier: Modifier = Modifier) {
                     contentScale = ContentScale.Crop
                 )
             } else {
-                //Text("Sin foto", style = MaterialTheme.typography.bodyMedium)
                 Icon(
                     imageVector = Icons.Filled.Image,
                     contentDescription = "Sin foto",
@@ -142,17 +145,16 @@ fun CreateProductScreen(modifier: Modifier = Modifier) {
                 }
             }) {
                 Icon(
-                    imageVector = Icons.Filled.CameraAlt,
+                    Icons.Filled.CameraAlt,
                     contentDescription = "Cámara",
                     modifier = Modifier.size(18.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Tomar Foto")
             }
-            Button(onClick = { galeriaLauncher.launch("image/*") })
-            {
+            Button(onClick = { galeriaLauncher.launch("image/*") }) {
                 Icon(
-                    imageVector = Icons.Filled.PhotoLibrary,
+                    Icons.Filled.PhotoLibrary,
                     contentDescription = "Galería",
                     modifier = Modifier.size(18.dp)
                 )
@@ -161,23 +163,21 @@ fun CreateProductScreen(modifier: Modifier = Modifier) {
             }
         }
 
-        // === Campo: Nombre ===
+        // === Campos de texto ===
         OutlinedTextField(
-            value = nombre,
+            value = username,
             onValueChange = {
-                nombre = it
-                nombreError = validateInputText("Nombre", it, 3)
+                username = it
+                UsernameError = validateInputText("Usuario", it, 3)
             },
-            label = { Text("Nombre") },
-            isError = nombreError != null,
+            label = { Text("Usuario") },
+            isError = UsernameError != null,
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
-
-        // Mensaje al usuario en caso de no cumplir validación
-        if (nombreError != null) {
+        if (UsernameError != null) {
             Text(
-                text = nombreError!!,
+                text = UsernameError!!,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.align(Alignment.Start)
@@ -186,9 +186,7 @@ fun CreateProductScreen(modifier: Modifier = Modifier) {
 
         OutlinedTextField(
             value = descripcion,
-            onValueChange = {
-                descripcion = it
-            },
+            onValueChange = { descripcion = it },
             label = { Text("Descripción") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -206,8 +204,6 @@ fun CreateProductScreen(modifier: Modifier = Modifier) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             modifier = Modifier.fillMaxWidth()
         )
-
-        // Mensaje en caso de no cumplir validación
         if (precioError != null) {
             Text(
                 text = precioError!!,
@@ -219,36 +215,26 @@ fun CreateProductScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Formulario válido solo si no hay errores y los campos obligatorios no están vacíos
-        var formValid: Boolean = nombreError == null &&
+        val formValid = UsernameError == null &&
                 precioError == null &&
-                nombre.trim().isNotEmpty() &&
+                username.trim().isNotEmpty() &&
                 precio.trim().isNotEmpty()
 
-        // Botón de guardar producto
         Button(
             onClick = {
                 Toast.makeText(context, "Producto guardado (solo UI)", Toast.LENGTH_LONG).show()
-                // TODO: Guardar en base de datos
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = formValid // Habilitado solo si el formulario es válido
+            enabled = formValid
         ) {
-            Icon(
-                imageVector = Icons.Filled.Save,
-                contentDescription = "Guardar",
-                modifier = Modifier.size(18.dp)
-            )
+            Icon(Icons.Filled.Save, contentDescription = "Guardar", modifier = Modifier.size(18.dp))
             Spacer(modifier = Modifier.width(8.dp))
             Text("Guardar Producto")
         }
     }
-
 }
 
-/**
- * Guarda un [Bitmap] en la galería y devuelve el [Uri] resultante.
- */
+// === Función auxiliar para guardar la imagen ===
 fun saveBitmapToGallery(context: android.content.Context, bitmap: Bitmap): Uri? {
     val filename = "producto_${System.currentTimeMillis()}.jpg"
     val contentValues = ContentValues().apply {
@@ -274,8 +260,9 @@ fun saveBitmapToGallery(context: android.content.Context, bitmap: Bitmap): Uri? 
     return uri
 }
 
+// === Preview ===
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun CreateProductScreenPreview() {
-    CreateProductScreen()
+    CreateProfileView() // Previsualiza con Scaffold incluido
 }
