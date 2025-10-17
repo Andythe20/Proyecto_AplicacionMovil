@@ -8,6 +8,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme =
@@ -15,6 +16,18 @@ private val DarkColorScheme =
         primary = Purple80,
         secondary = PurpleGrey80,
         tertiary = Pink80,
+    )
+
+private val DarkColorPalette =
+    darkColorScheme(
+        primary = MutedPink, // Acento principal, más suave que el SoftPink.
+        secondary = LightBrown, // Acento secundario que contrasta bien.
+        background = DarkChocolate, // Fondo principal, oscuro y cálido.
+        surface = DarkSurface, // Superficies (tarjetas) un poco más claras.
+        onPrimary = DarkChocolate, // Texto oscuro sobre el acento primario claro.
+        onSecondary = DarkChocolate, // Texto oscuro sobre el acento secundario claro.
+        onBackground = OffWhite, // Texto claro (casi blanco) sobre el fondo oscuro.
+        onSurface = OffWhite, // Texto claro sobre las superficies.
     )
 
 private val LightColorScheme =
@@ -33,11 +46,24 @@ private val LightColorScheme =
      */
     )
 
+// paleta de colores personalizada
+private val LightColorPalette =
+    lightColorScheme(
+        primary = Chocolate, // Color principal para botones y elementos importantes
+        secondary = SoftPink, // Color secundario para otros elementos
+        background = CreamPastel, // Color de fondo de las pantallas
+        surface = OffWhite, // Color para superficies como tarjetas (Cards)
+        onPrimary = Color.White, // Color del texto sobre el color primario (ej. texto en un botón Chocolate)
+        onSecondary = TextPrimary, // Color del texto sobre el color secundario
+        onBackground = TextPrimary, // Color del texto sobre el fondo principal
+        onSurface = TextPrimary, // Color del texto sobre las superficies (tarjetas)
+    )
+
 @Composable
 fun AppShopTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    // Desactivar Dynamic color para visualizar colores personalizados.
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val colorScheme =
@@ -47,8 +73,8 @@ fun AppShopTheme(
                 if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
             }
 
-            darkTheme -> DarkColorScheme
-            else -> LightColorScheme
+            darkTheme -> DarkColorPalette
+            else -> LightColorPalette
         }
 
     MaterialTheme(

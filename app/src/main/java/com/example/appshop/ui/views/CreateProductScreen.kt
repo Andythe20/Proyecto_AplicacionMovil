@@ -42,7 +42,7 @@ import com.example.appshop.utils.validateIntField
 
 
 @Composable
-fun CreateProductScreen() {
+fun CreateProductScreen(modifier: Modifier = Modifier) {
 
     // Contexto de la aplicación
     val context = LocalContext.current
@@ -54,15 +54,19 @@ fun CreateProductScreen() {
     var fotoUri by remember { mutableStateOf<Uri?>(null) }
 
     // === Estados de error ===
-    var nombreError by remember { mutableStateOf<String?>(null)}
-    var precioError by remember { mutableStateOf<String?>(null)}
+    var nombreError by remember { mutableStateOf<String?>(null) }
+    var precioError by remember { mutableStateOf<String?>(null) }
 
     // === Permisos y Lauchers ===
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (!isGranted) {
-            Toast.makeText(context, "Se necesita permiso de cámara para tomar fotos", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                context,
+                "Se necesita permiso de cámara para tomar fotos",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -89,160 +93,157 @@ fun CreateProductScreen() {
         }
     }
 
-        Scaffold(
-            topBar = { TopAppBar(title = { Text("Crear Producto") }) }
-        ) { padding ->
-            Column(
-                modifier = Modifier
-                    .padding(padding)
-                    .padding(16.dp)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
 
-            // === Vista previa ===
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                contentAlignment = Alignment.Center
-            ) {
-                if (fotoUri != null) {
-                    Image(
-                        painter = rememberAsyncImagePainter(fotoUri),
-                        contentDescription = "Foto del producto",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    //Text("Sin foto", style = MaterialTheme.typography.bodyMedium)
-                    Icon(
-                        imageVector = Icons.Filled.Image,
-                        contentDescription = "Sin foto",
-                        modifier = Modifier.size(92.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-            // === Botones de imagen ===
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = {
-                    val permissionStatus = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
-                    if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-                        camaraLauncher.launch()
-                    } else {
-                        cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
-                    }
-                }) {
-                    Icon(
-                        imageVector = Icons.Filled.CameraAlt,
-                        contentDescription = "Cámara",
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Tomar Foto")
-                }
-                Button(onClick = { galeriaLauncher.launch("image/*") })
-                {
-                    Icon(
-                        imageVector = Icons.Filled.PhotoLibrary,
-                        contentDescription = "Galería",
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Abrir Galería")
-                }
-            }
-
-            // === Campo: Nombre ===
-            OutlinedTextField(
-                value = nombre,
-                onValueChange = {
-                    nombre = it
-                    nombreError = validateInputText("Nombre", it, 3)
-                },
-                label = { Text("Nombre") },
-                isError = nombreError != null,
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            // Mensaje al usuario en caso de no cumplir validación
-            if(nombreError != null){
-                Text(
-                    text = nombreError!!,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.align(Alignment.Start)
+        // === Vista previa ===
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant),
+            contentAlignment = Alignment.Center
+        ) {
+            if (fotoUri != null) {
+                Image(
+                    painter = rememberAsyncImagePainter(fotoUri),
+                    contentDescription = "Foto del producto",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
                 )
-            }
-
-            OutlinedTextField(
-                value = descripcion,
-                onValueChange = {
-                    descripcion = it
-                },
-                label = { Text("Descripción") },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            OutlinedTextField(
-                value = precio,
-                onValueChange = {
-                    input ->
-                    if (input.matches(Regex("^\\d*\$"))){
-                        precio = input
-                        precioError = validateIntField("Precio", input, 0)
-                    }
-                },
-                label = { Text("Precio") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            // Mensaje en caso de no cumplir validación
-            if(precioError != null){
-                Text(
-                    text = precioError!!,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.align(Alignment.Start)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Formulario válido solo si no hay errores y los campos obligatorios no están vacíos
-            var formValid: Boolean = nombreError == null &&
-                    precioError == null &&
-                    nombre.trim().isNotEmpty() &&
-                    precio.trim().isNotEmpty()
-
-            // Botón de guardar producto
-            Button(
-                onClick = {
-                    Toast.makeText(context, "Producto guardado (solo UI)", Toast.LENGTH_LONG).show()
-                    // TODO: Guardar en base de datos
-                },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = formValid // Habilitado solo si el formulario es válido
-            ) {
+            } else {
+                //Text("Sin foto", style = MaterialTheme.typography.bodyMedium)
                 Icon(
-                    imageVector = Icons.Filled.Save,
-                    contentDescription = "Guardar",
+                    imageVector = Icons.Filled.Image,
+                    contentDescription = "Sin foto",
+                    modifier = Modifier.size(92.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        // === Botones de imagen ===
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = {
+                val permissionStatus =
+                    ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                    camaraLauncher.launch()
+                } else {
+                    cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                }
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.CameraAlt,
+                    contentDescription = "Cámara",
                     modifier = Modifier.size(18.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Guardar Producto")
+                Text("Tomar Foto")
+            }
+            Button(onClick = { galeriaLauncher.launch("image/*") })
+            {
+                Icon(
+                    imageVector = Icons.Filled.PhotoLibrary,
+                    contentDescription = "Galería",
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Abrir Galería")
             }
         }
+
+        // === Campo: Nombre ===
+        OutlinedTextField(
+            value = nombre,
+            onValueChange = {
+                nombre = it
+                nombreError = validateInputText("Nombre", it, 3)
+            },
+            label = { Text("Nombre") },
+            isError = nombreError != null,
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Mensaje al usuario en caso de no cumplir validación
+        if (nombreError != null) {
+            Text(
+                text = nombreError!!,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.align(Alignment.Start)
+            )
+        }
+
+        OutlinedTextField(
+            value = descripcion,
+            onValueChange = {
+                descripcion = it
+            },
+            label = { Text("Descripción") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        OutlinedTextField(
+            value = precio,
+            onValueChange = { input ->
+                if (input.matches(Regex("^\\d*\$"))) {
+                    precio = input
+                    precioError = validateIntField("Precio", input, 0)
+                }
+            },
+            label = { Text("Precio") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // Mensaje en caso de no cumplir validación
+        if (precioError != null) {
+            Text(
+                text = precioError!!,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.align(Alignment.Start)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Formulario válido solo si no hay errores y los campos obligatorios no están vacíos
+        var formValid: Boolean = nombreError == null &&
+                precioError == null &&
+                nombre.trim().isNotEmpty() &&
+                precio.trim().isNotEmpty()
+
+        // Botón de guardar producto
+        Button(
+            onClick = {
+                Toast.makeText(context, "Producto guardado (solo UI)", Toast.LENGTH_LONG).show()
+                // TODO: Guardar en base de datos
+            },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = formValid // Habilitado solo si el formulario es válido
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Save,
+                contentDescription = "Guardar",
+                modifier = Modifier.size(18.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Guardar Producto")
+        }
     }
+
 }
 
 /**
