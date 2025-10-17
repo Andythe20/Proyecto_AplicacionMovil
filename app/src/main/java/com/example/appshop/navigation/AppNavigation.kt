@@ -13,7 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.appshop.ui.auth.AuthScreen
 import com.example.appshop.ui.auth.SignupScreen
 import com.example.appshop.ui.components.MainLayout
-import com.example.appshop.ui.views.CreateProductScreen
+import com.example.appshop.ui.views.CreateProfileScreen
 import com.example.appshop.ui.views.HomeScreen
 
 /**
@@ -72,9 +72,9 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 HomeScreen(modifier.padding(padding), navController)
             }
         }
-        composable("createProduct") {
-            MainLayout(navController, title = "Crear Producto") { padding ->
-                CreateProductScreen(modifier = Modifier.padding(padding))
+        composable("createProfile") {
+            MainLayout(navController, title = "Crear Perfil") { padding ->
+                CreateProfileScreen(modifier = Modifier.padding(padding))
             }
         }
     }

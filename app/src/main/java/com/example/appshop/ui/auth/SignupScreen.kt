@@ -133,7 +133,8 @@ fun SignupScreen(
             // Cuando el usuario escribe, limpiamos el error para que desaparezca al corregirlo.
             onValueChange = {
                 email = it
-                emailError = null    },
+                emailError = null
+            },
             label = { Text(text = "Dirección correo electrónico") },
             modifier = Modifier.fillMaxWidth(),
 
@@ -149,7 +150,7 @@ fun SignupScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         OutlinedTextField(
-            value = nombre,onValueChange = {
+            value = nombre, onValueChange = {
                 nombre = it
                 nombreError = null
             },
@@ -194,7 +195,8 @@ fun SignupScreen(
                 else Icons.Filled.VisibilityOff
 
                 // Descripción para accesibilidad
-                val description = if (contrasennaVisible) "Ocultar contraseña" else "Mostrar contraseña"
+                val description =
+                    if (contrasennaVisible) "Ocultar contraseña" else "Mostrar contraseña"
 
                 IconButton(onClick = { contrasennaVisible = !contrasennaVisible }) {
                     Icon(imageVector = image, contentDescription = description)
@@ -209,7 +211,8 @@ fun SignupScreen(
             value = contrasennaValidar,
             onValueChange = {
                 contrasennaValidar = it
-                contrasennaValidarError = null},
+                contrasennaValidarError = null
+            },
             label = { Text(text = "Confirmar contraseña") },
             modifier = Modifier.fillMaxWidth(),
             isError = contrasennaValidarError != null,
@@ -230,7 +233,8 @@ fun SignupScreen(
                     Icons.Filled.Visibility
                 else Icons.Filled.VisibilityOff
 
-                val description = if (contrasennaValidarVisible) "Ocultar contraseña" else "Mostrar contraseña"
+                val description =
+                    if (contrasennaValidarVisible) "Ocultar contraseña" else "Mostrar contraseña"
 
                 IconButton(onClick = { contrasennaValidarVisible = !contrasennaValidarVisible }) {
                     Icon(imageVector = image, contentDescription = description)
