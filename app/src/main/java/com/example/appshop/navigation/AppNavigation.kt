@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -15,16 +16,13 @@ import androidx.navigation.compose.rememberNavController
 import com.example.appshop.ui.auth.AuthScreen
 import com.example.appshop.ui.auth.SignupScreen
 import com.example.appshop.ui.components.MainLayout
-import com.example.appshop.ui.views.CreateProductScreen
 import com.example.appshop.ui.views.HomeScreen
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.appshop.db.AppDatabase
 import com.example.appshop.db.repository.UserRepository
+import com.example.appshop.ui.views.CreateProfileScreen
 import com.example.appshop.viewmodel.AuthViewModel
 import com.example.appshop.viewmodel.AuthViewModelFactory
-
 
 
 /**
@@ -55,13 +53,33 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         composable("auth") { AuthScreen(modifier, navController) }
         composable(
             route = "login",
-            enterTransition = { slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) },
-            exitTransition = { slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500)) }
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { 1000 },
+                    animationSpec = tween(500)
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { -1000 },
+                    animationSpec = tween(500)
+                )
+            }
         ) { LoginScreen(modifier, navController, viewModel) }
         composable(
             route = "signup",
-            enterTransition = { slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) },
-            exitTransition = { slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500)) }
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { 1000 },
+                    animationSpec = tween(500)
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { -1000 },
+                    animationSpec = tween(500)
+                )
+            }
         ) { SignupScreen(modifier, navController, viewModel) }
 
         // --- Pantallas con Drawer lateral ---
@@ -70,9 +88,9 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 HomeScreen(modifier.padding(padding), navController, viewModel)
             }
         }
-        composable("createProduct") {
+        composable("createProfile") {
             MainLayout(navController) { padding ->
-                CreateProductScreen()
+                CreateProfileScreen(modifier = Modifier.padding(padding))
             }
         }
     }

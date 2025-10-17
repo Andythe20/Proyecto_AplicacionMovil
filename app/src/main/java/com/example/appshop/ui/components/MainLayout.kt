@@ -45,11 +45,11 @@ fun MainLayout(
                     }
                 )
                 NavigationDrawerItem(
-                    label = { Text("Crear Productos") },
+                    label = { Text("Crear Perfil") },
                     selected = false,
                     onClick = {
                         scope.launch { drawerState.close() }
-                        navController.navigate("createProduct")
+                        navController.navigate("createProfile")
                     }
                 )
             }
