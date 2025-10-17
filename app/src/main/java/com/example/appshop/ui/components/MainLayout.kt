@@ -10,6 +10,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainLayout(
     navController: NavHostController,
+    title: String = "OnlyFlans", // Título predeterminado
     content: @Composable (PaddingValues) -> Unit
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -27,7 +29,12 @@ fun MainLayout(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                Text("OnlyFlans", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(16.dp))
+                Text(
+                    "OnlyFlans",
+                    style = MaterialTheme.typography.displayMedium,
+                    fontSize = 24.sp,
+                    modifier = Modifier.padding(16.dp)
+                )
                 HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
                 NavigationDrawerItem(
                     label = { Text("Inicio") },
@@ -38,11 +45,11 @@ fun MainLayout(
                     }
                 )
                 NavigationDrawerItem(
-                    label = { Text("Productos") },
+                    label = { Text("Crear Productos") },
                     selected = false,
                     onClick = {
                         scope.launch { drawerState.close() }
-                        navController.navigate("products")
+                        navController.navigate("createProduct")
                     }
                 )
             }
@@ -51,7 +58,13 @@ fun MainLayout(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("OnlyFlans") },
+                    title = {
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.displayMedium,
+                            fontSize = 24.sp
+                        )
+                    },
                     navigationIcon = {
                         IconButton(onClick = { scope.launch { drawerState.open() } }) {
                             Icon(Icons.Default.Menu, contentDescription = "Abrir menú")

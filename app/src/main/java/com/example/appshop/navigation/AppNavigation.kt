@@ -37,13 +37,33 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         composable("auth") { AuthScreen(modifier, navController) }
         composable(
             route = "login",
-            enterTransition = { slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) },
-            exitTransition = { slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500)) }
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { 1000 },
+                    animationSpec = tween(500)
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { -1000 },
+                    animationSpec = tween(500)
+                )
+            }
         ) { LoginScreen(modifier, navController) }
         composable(
             route = "signup",
-            enterTransition = { slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) },
-            exitTransition = { slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500)) }
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { 1000 },
+                    animationSpec = tween(500)
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { -1000 },
+                    animationSpec = tween(500)
+                )
+            }
         ) { SignupScreen(modifier, navController) }
 
         // --- Pantallas con Drawer lateral ---
@@ -53,8 +73,8 @@ fun AppNavigation(modifier: Modifier = Modifier) {
             }
         }
         composable("createProduct") {
-            MainLayout(navController) { padding ->
-                CreateProductScreen()
+            MainLayout(navController, title = "Crear Producto") { padding ->
+                CreateProductScreen(modifier = Modifier.padding(padding))
             }
         }
     }
