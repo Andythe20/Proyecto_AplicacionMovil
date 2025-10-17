@@ -12,6 +12,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 
 /**
@@ -25,8 +29,10 @@ import androidx.navigation.NavHostController
 fun AppDropdownMenu( // Renombrado para mayor claridad
     expanded: Boolean,
     onDismissRequest: () -> Unit,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
+    var showLogoutDialog by remember { mutableStateOf(false) }
+
     DropdownMenu(
         expanded = expanded,
         onDismissRequest = onDismissRequest // Usamos la función que nos pasan
@@ -69,11 +75,21 @@ fun AppDropdownMenu( // Renombrado para mayor claridad
             text = { Text("Cerrar Sesión") },
             leadingIcon = { Icon(Icons.Outlined.Info, contentDescription = null) },
             onClick = {
-                navController.navigate("auth") {
-                    popUpTo(0) // Limpia todo el historial
-                }
                 onDismissRequest() // Cierra el menú
+                showLogoutDialog = true
             }
         )
     }
+
+    LogoutConfirmationDialog(
+        showDialog = showLogoutDialog,
+        onDismiss = { showLogoutDialog = false },
+        onConfirmLogout = {
+            showLogoutDialog = false
+            // Aquí manejas el logout
+            navController.navigate("login") {
+                popUpTo("home") { inclusive = true }
+            }
+        }
+    )
 }
