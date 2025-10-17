@@ -118,14 +118,6 @@ fun HomeScreen(
                 PromotionsSection()
             }
 
-            item {
-                Spacer(modifier = Modifier.height(24.dp))
-                Button(
-                    onClick = {navController.navigate("createProduct") }
-                ) {
-                    Text("Crear Producto", fontSize = 22.sp)
-                }
-            }
         }
     }
 }
