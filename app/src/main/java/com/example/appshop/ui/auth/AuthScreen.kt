@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.appshop.R
+import com.example.appshop.ui.theme.LatoFontFamily
+import com.example.appshop.ui.theme.PacificoFontFamily
 
 @Composable
 fun AuthScreen(
@@ -53,7 +55,7 @@ fun AuthScreen(
             style =
                 TextStyle(
                     fontSize = 24.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = PacificoFontFamily,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
                 ),

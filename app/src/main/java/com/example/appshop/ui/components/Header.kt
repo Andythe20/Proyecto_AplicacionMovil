@@ -15,9 +15,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.appshop.R
+import com.example.appshop.ui.theme.PacificoFontFamily
 
 @Composable
-fun HeaderSection() {
+fun HeaderSection(userName: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -31,9 +32,10 @@ fun HeaderSection() {
                 .size(120.dp)
         )
         Text(
-            text = "Bienvenido!",
+            text = "Hola, $userName!",
             fontSize = 35.sp,
-            fontWeight = FontWeight.Bold,
+            fontFamily = PacificoFontFamily,
+            fontWeight = FontWeight.Light,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(top = 10.dp)
         )
