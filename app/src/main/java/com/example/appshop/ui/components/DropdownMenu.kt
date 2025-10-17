@@ -1,6 +1,7 @@
 package com.example.appshop.ui.components
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ExitToApp
 import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.Info
@@ -73,7 +74,7 @@ fun AppDropdownMenu( // Renombrado para mayor claridad
         // Tercera sección: Cerrar Sesión
         DropdownMenuItem(
             text = { Text("Cerrar Sesión") },
-            leadingIcon = { Icon(Icons.Outlined.Info, contentDescription = null) },
+            leadingIcon = { Icon(Icons.AutoMirrored.Outlined.ExitToApp, contentDescription = null) },
             onClick = {
                 onDismissRequest() // Cierra el menú
                 showLogoutDialog = true

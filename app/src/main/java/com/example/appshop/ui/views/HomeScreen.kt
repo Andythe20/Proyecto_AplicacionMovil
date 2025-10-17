@@ -2,25 +2,23 @@ package com.example.appshop.ui.views
 
 import PromotionsSection
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +37,7 @@ import com.example.appshop.db.AppDatabase
 import com.example.appshop.db.repository.UserRepository
 import com.example.appshop.ui.components.AppDropdownMenu
 import com.example.appshop.ui.components.CarouselSection
+import com.example.appshop.ui.components.FooterSection
 import com.example.appshop.ui.components.HeaderSection
 import com.example.appshop.viewmodel.AuthViewModel
 import com.example.appshop.viewmodel.AuthViewModelFactory
@@ -51,6 +50,12 @@ fun HomeScreen(
     navController: NavHostController,
     viewModel: AuthViewModel
 ){
+    // --- OBTENER EL CONTEXTO Y CREAR LA FUNCIÓN AUXILIAR ---
+    val context = LocalContext.current // Obtiene el contexto para usar componentes del sistema Android
+    val openUrl = { url: String -> // Funcion lambda para abrir URL
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        context.startActivity(intent)
+    }
 
     //comportamiento del scroll al topBar
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -94,29 +99,34 @@ fun HomeScreen(
         }
     )
     { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            item {
-                // HEADER
-                HeaderSection(username)
-            }
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                item {
+                    // HEADER
+                    HeaderSection(username)
+                }
 
-            item {
-                Spacer(modifier = Modifier.height(16.dp))
-                CarouselSection()
-            }
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    CarouselSection()
+                }
 
-            item {
-                Spacer(modifier = Modifier.height(16.dp))
-                PromotionsSection()
-            }
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    PromotionsSection()
+                }
 
+                item {
+                    FooterSection(openUrl)
+                }
+
+
+            }
         }
-    }
 }
 
 @Preview(showBackground = true)

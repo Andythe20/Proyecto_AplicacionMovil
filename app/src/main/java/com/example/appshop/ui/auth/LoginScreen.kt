@@ -33,18 +33,15 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import com.example.appshop.R
-import com.example.appshop.db.AppDatabase
-import com.example.appshop.db.repository.UserRepository
+import com.example.appshop.ui.theme.PacificoFontFamily
 import com.example.appshop.viewmodel.AuthViewModel
-import com.example.appshop.viewmodel.AuthViewModelFactory
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
+    navController: NavController,
     viewModel: AuthViewModel
 ) {
     var email by remember { mutableStateOf("") }
@@ -71,7 +68,7 @@ fun LoginScreen(
             style =
                 TextStyle(
                     fontSize = 35.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = PacificoFontFamily,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
                 ),
