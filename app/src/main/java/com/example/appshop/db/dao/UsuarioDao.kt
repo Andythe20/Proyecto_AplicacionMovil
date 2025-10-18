@@ -62,5 +62,27 @@ interface UserDao {
      */
     @Query("SELECT * FROM users WHERE email = :email")
     suspend fun getUserByEmail(email: String): User?
+
+    /**
+     * Actualiza el perfil de un usuario existente en la base de datos.
+     *
+     * @param email El correo electrónico del usuario (identificador único).
+     * @param name El nuevo nombre del usuario.
+     * @param profileImageUri La nueva URI de la imagen de perfil (opcional).
+     * @param birthdate La nueva fecha de nacimiento como String (opcional).
+     *
+     * @Query Permite ejecutar una consulta SQL personalizada para actualizar los campos especificados.
+     * ":param" son parámetros que se reemplazarán por los valores de la función.
+     *
+     * `suspend` Esta función es una corrutina, lo que permite que Room la ejecute en un hilo
+     * de segundo plano para no bloquear la interfaz de usuario (UI).
+     */
+    @Query("UPDATE users SET name = :name, profileImageUri = :profileImageUri, birthdate = :birthdate WHERE email = :email")
+    suspend fun updateUserProfile(
+        email: String,
+        name: String,
+        profileImageUri: String?,
+        birthdate: String?, // Deberá convertirse a String más adelante ya que room no soporta LocalDate directamente
+    )
 }
 

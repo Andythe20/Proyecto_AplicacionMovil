@@ -87,6 +87,7 @@ fun AuthScreen(
                 navController.navigate("signup")
             },
             modifier = Modifier.fillMaxWidth().height(60.dp),
+
         ) {
             Text(text = "Registrarse", fontSize = 22.sp)
         }
