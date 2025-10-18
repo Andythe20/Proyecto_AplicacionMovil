@@ -51,7 +51,7 @@ fun FooterSection(openUrl: (String) -> Unit){
                 openUrl("https://www.instagram.com/onlyflans/")
             }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.logo_instagram),
+                    painter = painterResource(id = R.drawable.instagram_logo),
                     contentDescription = "Instagram",
                     tint = Color.Unspecified
                 )
