@@ -20,6 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.appshop.db.AppDatabase
 import com.example.appshop.db.repository.UserRepository
 import com.example.appshop.ui.SplashScreen
+import com.example.appshop.ui.views.CartScreen
 import com.example.appshop.ui.views.CreateProfileScreen
 import com.example.appshop.viewmodel.AuthViewModel
 import com.example.appshop.viewmodel.AuthViewModelFactory
@@ -97,5 +98,12 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 CreateProfileScreen(modifier = Modifier.padding(padding))
             }
         }
+
+        composable (route = "cart"){
+            MainLayout(navController) { padding ->
+                CartScreen()
+            }
+        }
+
     }
 }
