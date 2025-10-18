@@ -127,6 +127,7 @@ fun SignupScreen(
             },
             label = { Text(text = "Dirección correo electrónico") },
             modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
 
             isError = emailError != null,
             // Muestra el mensaje de error debajo si existe.
@@ -151,7 +152,8 @@ fun SignupScreen(
                 if (nombreError != null) {
                     Text(text = nombreError!!)
                 }
-            }
+            },
+            singleLine = true
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -170,6 +172,7 @@ fun SignupScreen(
                     Text(text = contrasennaError!!)
                 }
             },
+            singleLine = true,
             // --- Lógica de visibilidad ---
             visualTransformation = if (contrasennaVisible) {
                 // Si contrasennaVisible es true, no aplicamos ninguna transformación (texto visible).
@@ -211,6 +214,7 @@ fun SignupScreen(
                     Text(text = contrasennaValidarError!!)
                 }
             },
+            singleLine = true,
             // --- Lógica de visibilidad ---
             visualTransformation = if (contrasennaValidarVisible) {
                 VisualTransformation.None
