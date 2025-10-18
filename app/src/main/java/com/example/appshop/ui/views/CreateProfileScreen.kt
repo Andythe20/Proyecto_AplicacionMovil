@@ -4,6 +4,7 @@ package com.example.appshop.ui.views
 
 import android.Manifest
 import android.content.ContentValues
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
@@ -70,19 +71,15 @@ fun CreateProfileScreen(
     var username by remember { mutableStateOf(user?.name ?: "") }
     var showDatePicker by remember { mutableStateOf(false) }
     val today = java.time.LocalDate.now()
-    //var birthdate by remember { mutableStateOf(user?.birthdate?.toString() ?: "") }
-    // Inicializa birthdate con el valor del usuario (LocalDate?) o con la fecha de hoy como valor por defecto.
     var birthdate by remember { mutableStateOf(user?.birthdate ?: today) }
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = birthdate.atStartOfDay(java.time.ZoneOffset.UTC)
             .toInstant()
             .toEpochMilli()
     )
-
     var fotoUri by remember { mutableStateOf<Uri?>(user?.profileImageUri?.let { Uri.parse(it) }) }
 
     var usernameError by remember { mutableStateOf<String?>(null) }
-
 
     // === Permisos y launchers ===
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
@@ -100,7 +97,10 @@ fun CreateProfileScreen(
     val galeriaLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
-        fotoUri = uri 
+        uri?.let { selectedUri ->
+            fotoUri = selectedUri
+            Toast.makeText(context, "Imagen seleccionada", Toast.LENGTH_SHORT).show()
+        }
     }
 
     val camaraLauncher = rememberLauncherForActivityResult(
@@ -114,6 +114,17 @@ fun CreateProfileScreen(
             } else {
                 Toast.makeText(context, "Error al guardar la foto", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    // Permisos runtime según versión
+    val readStoragePermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            galeriaLauncher.launch("image/*")
+        } else {
+            Toast.makeText(context, "Se necesita permiso para acceder a la galería", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -174,12 +185,19 @@ fun CreateProfileScreen(
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Tomar Foto")
             }
-            Button(onClick = { galeriaLauncher.launch("image/*") }) {
-                Icon(
-                    Icons.Filled.PhotoLibrary,
-                    contentDescription = "Galería",
-                    modifier = Modifier.size(18.dp)
-                )
+            Button(onClick = {
+                val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                    Manifest.permission.READ_MEDIA_IMAGES
+                else Manifest.permission.READ_EXTERNAL_STORAGE
+
+                val granted = ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+                if (granted) {
+                    galeriaLauncher.launch("image/*")
+                } else {
+                    readStoragePermissionLauncher.launch(permission)
+                }
+            }) {
+                Icon(Icons.Filled.PhotoLibrary, contentDescription = "Galería")
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Galería")
             }
