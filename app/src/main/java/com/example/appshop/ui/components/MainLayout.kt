@@ -52,6 +52,16 @@ fun MainLayout(
                         navController.navigate("createProfile")
                     }
                 )
+
+                NavigationDrawerItem(
+                    label = { Text("Carrito") },
+                    selected = false,
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        navController.navigate("cart")
+                    }
+                )
+
             }
         }
     ) {
