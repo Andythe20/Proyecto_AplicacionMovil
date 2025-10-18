@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -41,10 +42,30 @@ fun HeaderSection(userName: String) {
         end = Offset(Float.POSITIVE_INFINITY, 0f)
     )
 
+    // color para el borde inferior
+    val borderColor = MaterialTheme.colorScheme.primary
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(gradientBrush)
+
+            .drawBehind {
+                // Dibuja el borde superior
+                drawLine(
+                    color = borderColor,
+                    start = Offset(0f, 0f),
+                    end = Offset(size.width, 0f),
+                    strokeWidth = 8.dp.toPx()
+                )
+                // Dibuja el borde inferior
+                drawLine(
+                    color = borderColor,
+                    start = Offset(0f, size.height),
+                    end = Offset(size.width, size.height),
+                    strokeWidth = 4.dp.toPx()
+                )
+            }
             .padding(vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -62,7 +83,7 @@ fun HeaderSection(userName: String) {
                 )
                 .border(
                     width = 3.dp,
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(15.dp)
                 ),
             contentAlignment = Alignment.Center
@@ -81,8 +102,10 @@ fun HeaderSection(userName: String) {
             fontSize = 35.sp,
             fontFamily = PacificoFontFamily,
             fontWeight = FontWeight.Light,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(top = 10.dp)
         )
+
+
     }
 }
