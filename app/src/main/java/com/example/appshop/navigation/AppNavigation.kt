@@ -90,7 +90,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         }
         composable("createProfile") {
             MainLayout(navController) { padding ->
-                CreateProfileScreen(modifier = Modifier.padding(padding))
+                CreateProfileScreen(modifier = Modifier.padding(padding), viewModel = viewModel)
             }
         }
     }

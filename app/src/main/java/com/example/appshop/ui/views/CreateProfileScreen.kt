@@ -13,12 +13,12 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -29,41 +29,60 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.appshop.utils.validateInputText
-import com.example.appshop.utils.validateIntField
+import com.example.appshop.viewmodel.AuthViewModel
+import java.time.ZoneId
 
 // === Scaffold con TopAppBar incluido ===
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CreateProfileView() {
+fun CreateProfileView(viewModel: AuthViewModel = viewModel()) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Crear Perfil") }
+                title = { Text("Perfil de Usuario") }
             )
         }
     ) { innerPadding -> // padding del Scaffold
         CreateProfileScreen(
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
+            viewModel = viewModel
         )
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CreateProfileScreen(modifier: Modifier = Modifier) {
+fun CreateProfileScreen(
+    modifier: Modifier = Modifier,
+    viewModel: AuthViewModel
+) {
+    // Creación del contexto
     val context = LocalContext.current
+    val user = viewModel.loggedInUser
 
-    var username by remember { mutableStateOf("") }
-    var descripcion by remember { mutableStateOf("") }
-    var precio by remember { mutableStateOf("") }
-    var fotoUri by remember { mutableStateOf<Uri?>(null) }
+    // === Estados de los campos del formulario ===
+    var username by remember { mutableStateOf(user?.name ?: "") }
+    var showDatePicker by remember { mutableStateOf(false) }
+    val today = java.time.LocalDate.now()
+    //var birthdate by remember { mutableStateOf(user?.birthdate?.toString() ?: "") }
+    // Inicializa birthdate con el valor del usuario (LocalDate?) o con la fecha de hoy como valor por defecto.
+    var birthdate by remember { mutableStateOf(user?.birthdate ?: today) }
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = birthdate.atStartOfDay(java.time.ZoneOffset.UTC)
+            .toInstant()
+            .toEpochMilli()
+    )
 
-    var UsernameError by remember { mutableStateOf<String?>(null) }
-    var precioError by remember { mutableStateOf<String?>(null) }
+    var fotoUri by remember { mutableStateOf<Uri?>(user?.profileImageUri?.let { Uri.parse(it) }) }
+
+    var usernameError by remember { mutableStateOf<String?>(null) }
+
 
     // === Permisos y launchers ===
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
@@ -80,7 +99,9 @@ fun CreateProfileScreen(modifier: Modifier = Modifier) {
 
     val galeriaLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri -> fotoUri = uri }
+    ) { uri ->
+        fotoUri = uri 
+    }
 
     val camaraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicturePreview()
@@ -98,7 +119,6 @@ fun CreateProfileScreen(modifier: Modifier = Modifier) {
 
     Column(
         modifier = modifier
-
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp) //
@@ -119,19 +139,21 @@ fun CreateProfileScreen(modifier: Modifier = Modifier) {
             if (fotoUri != null) {
                 Image(
                     painter = rememberAsyncImagePainter(fotoUri),
-                    contentDescription = "Foto del producto",
+                    contentDescription = "Foto del perfil",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
             } else {
                 Icon(
-                    imageVector = Icons.Filled.Image,
+                    imageVector = Icons.Filled.AccountCircle,
                     contentDescription = "Sin foto",
-                    modifier = Modifier.size(92.dp),
+                    modifier = Modifier.size(92.dp), //120.dp
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
+
+        Spacer(modifier = Modifier.height(12.dp))
 
         // === Botones de imagen ===
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -159,84 +181,102 @@ fun CreateProfileScreen(modifier: Modifier = Modifier) {
                     modifier = Modifier.size(18.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Abrir Galería")
+                Text("Galería")
             }
         }
 
-        // === Campos de texto ===
+        Spacer(modifier = Modifier.height(24.dp)) //
+
+        // === Campo Nombre ===
         OutlinedTextField(
             value = username,
             onValueChange = {
                 username = it
-                UsernameError = validateInputText("Usuario", it, 3)
+                usernameError = validateInputText("Nombre", it, 3)
             },
-            label = { Text("Usuario") },
-            isError = UsernameError != null,
+            label = { Text("Nombre") },
+            isError = usernameError != null,
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
-        if (UsernameError != null) {
+        if (usernameError != null) {
             Text(
-                text = UsernameError!!,
+                text = usernameError!!,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.align(Alignment.Start)
             )
         }
 
+        // === Campo Fecha Nacimiento ===
         OutlinedTextField(
-            value = descripcion,
-            onValueChange = { descripcion = it },
-            label = { Text("Descripción") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        OutlinedTextField(
-            value = precio,
-            onValueChange = { input ->
-                if (input.matches(Regex("^\\d*\$"))) {
-                    precio = input
-                    precioError = validateIntField("Precio", input, 0)
+            value = birthdate.toString(),
+            onValueChange = {},
+            readOnly = true,
+            label = { Text("Fecha de nacimiento") },
+            trailingIcon = {
+                IconButton(onClick = { showDatePicker = true }) {
+                    Icon(Icons.Filled.CalendarToday, contentDescription = "Seleccionar fecha")
                 }
             },
-            label = { Text("Precio") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             modifier = Modifier.fillMaxWidth()
         )
-        if (precioError != null) {
-            Text(
-                text = precioError!!,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.align(Alignment.Start)
-            )
+
+        if (showDatePicker) {
+            DatePickerDialog(
+                onDismissRequest = { showDatePicker = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        datePickerState.selectedDateMillis?.let { millis ->
+                            birthdate = java.time.Instant.ofEpochMilli(millis)
+                                .atZone(java.time.ZoneOffset.UTC)
+                                .toLocalDate()
+                        }
+                        showDatePicker = false
+                    }) {
+                        Text("Seleccionar")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDatePicker = false }) {
+                        Text("Cancelar")
+                    }
+                }
+            ) {
+                DatePicker(state = datePickerState)
+            }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
-        val formValid = UsernameError == null &&
-                precioError == null &&
-                username.trim().isNotEmpty() &&
-                precio.trim().isNotEmpty()
 
+        // === Guardar perfil ===
         Button(
             onClick = {
-                Toast.makeText(context, "Producto guardado (solo UI)", Toast.LENGTH_LONG).show()
+                if (usernameError == null && username.isNotBlank()) {
+                    viewModel.updateUserProfile(
+                        name = username,
+                        imageProfileUri = fotoUri?.toString(),
+                        birthdate = birthdate.toString()
+                    ) { success, message ->
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(context, "Revisa los campos", Toast.LENGTH_SHORT).show()
+                }
             },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = formValid
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Icon(Icons.Filled.Save, contentDescription = "Guardar", modifier = Modifier.size(18.dp))
+            Icon(Icons.Filled.Save, contentDescription = "Guardar")
             Spacer(modifier = Modifier.width(8.dp))
-            Text("Guardar Producto")
+            Text("Guardar cambios")
         }
     }
 }
 
 // === Función auxiliar para guardar la imagen ===
 fun saveBitmapToGallery(context: android.content.Context, bitmap: Bitmap): Uri? {
-    val filename = "producto_${System.currentTimeMillis()}.jpg"
+    val filename = "perfil_${System.currentTimeMillis()}.jpg"
     val contentValues = ContentValues().apply {
         put(MediaStore.Images.Media.DISPLAY_NAME, filename)
         put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
@@ -261,6 +301,7 @@ fun saveBitmapToGallery(context: android.content.Context, bitmap: Bitmap): Uri? 
 }
 
 // === Preview ===
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun CreateProductScreenPreview() {

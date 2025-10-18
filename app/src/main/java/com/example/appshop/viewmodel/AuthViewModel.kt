@@ -83,13 +83,60 @@ class AuthViewModel(private val repository: UserRepository) : ViewModel() {
 
             withContext(Dispatchers.Main) {
                 if (user != null) {
-                    // Guardamos el usuaruio en el estado 'loggedInUser'.
+                    // Guardamos el usuario en el estado 'loggedInUser'.
                     loggedInUser = user
                     onResult(true, "Inicio de sesión exitoso.")
                 } else {
                     onResult(false, "Correo o contraseña incorrectos.")
                 }
             }
+        }
+    }
+
+    /**
+     * Actualiza el perfil del usuario logueado.
+     * @param name Nuevo nombre del usuario.
+     * @param imageUrl URI o ruta de la imagen (puede ser `null` si no hay foto).
+     * @param birthdate Fecha de nacimiento (como String, ej. "2000-05-10").
+     * @param onResult Callback que devuelve si la actualización fue exitosa y un mensaje descriptivo.
+     */
+    fun updateUserProfile(
+        name: String,
+        imageProfileUri: String?,
+        birthdate: String?,
+        onResult: (Boolean, String) -> Unit,
+    ) {
+        val user = loggedInUser
+        if (user == null) {
+            onResult(false, "No hay usuario logueado.")
+            return
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                repository.updateUserProfile(
+                    email = user.email,
+                    name = name,
+                    imageProfileUri = imageProfileUri,
+                    birthdate = birthdate
+                )
+
+                // Actualizamos el estado del usuario logueado
+                loggedInUser = user.copy(
+                    name = name,
+                    profileImageUri = imageProfileUri,
+                    birthdate = birthdate?.let { java.time.LocalDate.parse(it) }
+                )
+
+                withContext(Dispatchers.Main) {
+                    onResult(true, "Perfil actualizado exitosamente.")
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    onResult(false, "Error al actualizar el perfil: ${e.message}")
+                }
+            }
+
         }
     }
 }
