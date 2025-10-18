@@ -4,9 +4,10 @@ package com.example.appshop.ui.views
 
 import android.Manifest
 import android.content.ContentValues
-import android.content.Intent
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -37,7 +38,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.appshop.utils.validateInputText
 import com.example.appshop.viewmodel.AuthViewModel
-import java.time.ZoneId
+
 
 // === Scaffold con TopAppBar incluido ===
 @RequiresApi(Build.VERSION_CODES.O)
@@ -77,7 +78,8 @@ fun CreateProfileScreen(
             .toInstant()
             .toEpochMilli()
     )
-    var fotoUri by remember { mutableStateOf<Uri?>(user?.profileImageUri?.let { Uri.parse(it) }) }
+    //var fotoUri by remember { mutableStateOf<Uri?>(user?.profileImageUri?.let { Uri.parse(it) }) }
+    var fotoUri = loadProfileImage(user?.profileImageUri)
 
     var usernameError by remember { mutableStateOf<String?>(null) }
 
@@ -98,7 +100,7 @@ fun CreateProfileScreen(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
         uri?.let { selectedUri ->
-            fotoUri = selectedUri
+            fotoUri.value = selectedUri
             Toast.makeText(context, "Imagen seleccionada", Toast.LENGTH_SHORT).show()
         }
     }
@@ -109,7 +111,7 @@ fun CreateProfileScreen(
         if (bitmap != null) {
             val savedUri = saveBitmapToGallery(context, bitmap)
             if (savedUri != null) {
-                fotoUri = savedUri
+                fotoUri.value = savedUri
                 Toast.makeText(context, "Foto guardada en galería", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, "Error al guardar la foto", Toast.LENGTH_SHORT).show()
@@ -147,9 +149,9 @@ fun CreateProfileScreen(
                 .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center
         ) {
-            if (fotoUri != null) {
+            if (fotoUri.value != null) {
                 Image(
-                    painter = rememberAsyncImagePainter(fotoUri),
+                    painter = rememberAsyncImagePainter(fotoUri.value),
                     contentDescription = "Foto del perfil",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -158,7 +160,7 @@ fun CreateProfileScreen(
                 Icon(
                     imageVector = Icons.Filled.AccountCircle,
                     contentDescription = "Sin foto",
-                    modifier = Modifier.size(92.dp), //120.dp
+                    modifier = Modifier.size(92.dp),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
@@ -274,7 +276,7 @@ fun CreateProfileScreen(
                 if (usernameError == null && username.isNotBlank()) {
                     viewModel.updateUserProfile(
                         name = username,
-                        imageProfileUri = fotoUri?.toString(),
+                        imageProfileUri = fotoUri.value?.toString(),
                         birthdate = birthdate.toString()
                     ) { success, message ->
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -316,6 +318,17 @@ fun saveBitmapToGallery(context: android.content.Context, bitmap: Bitmap): Uri? 
         }
     }
     return uri
+}
+
+@Composable
+fun loadProfileImage(userUri: String?): MutableState<Uri?>{
+    val fotoUri = remember { mutableStateOf<Uri?>(null) }
+    LaunchedEffect(Unit) {
+        userUri?.let { uriString ->
+            fotoUri.value = Uri.parse(uriString)
+        }
+    }
+    return fotoUri
 }
 
 // === Preview ===
