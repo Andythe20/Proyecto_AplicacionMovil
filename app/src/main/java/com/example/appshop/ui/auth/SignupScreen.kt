@@ -43,6 +43,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.lint.kotlin.metadata.Visibility
+import com.example.appshop.ui.theme.PacificoFontFamily
 
 /**
  * Composable que representa la pantalla de registro de nuevos usuarios.
@@ -97,7 +98,7 @@ fun SignupScreen(
             style =
                 TextStyle(
                     fontSize = 35.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = PacificoFontFamily,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center
                 ),

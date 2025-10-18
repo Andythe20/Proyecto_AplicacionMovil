@@ -5,7 +5,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -20,6 +19,7 @@ import com.example.appshop.ui.views.HomeScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.appshop.db.AppDatabase
 import com.example.appshop.db.repository.UserRepository
+import com.example.appshop.ui.SplashScreen
 import com.example.appshop.ui.views.CreateProfileScreen
 import com.example.appshop.viewmodel.AuthViewModel
 import com.example.appshop.viewmodel.AuthViewModelFactory
@@ -47,7 +47,11 @@ fun AppNavigation(modifier: Modifier = Modifier) {
     val repo = remember { UserRepository(db.userDao()) }
     val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(repo))
 
-    NavHost(navController = navController, startDestination = "auth", modifier = modifier) {
+    NavHost(navController = navController, startDestination = "splash", modifier = modifier) {
+
+        composable ("splash"){
+            SplashScreen(navController = navController)
+        }
 
         // --- Pantallas sin Drawer (auth/login/signup) ---
         composable("auth") { AuthScreen(modifier, navController) }
