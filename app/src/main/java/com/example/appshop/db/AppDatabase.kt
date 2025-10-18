@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.example.appshop.db.converters.DateConverters
 import com.example.appshop.db.dao.UserDao
 import com.example.appshop.db.entities.User
 
@@ -21,6 +23,7 @@ import com.example.appshop.db.entities.User
  *                     Para proyectos más simples, se puede poner en `false`.
  */
 @Database(entities = [User::class], version = 1, exportSchema = true)
+@TypeConverters(DateConverters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     /**

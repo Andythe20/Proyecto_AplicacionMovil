@@ -73,6 +73,7 @@ fun LoginScreen(
                     textAlign = TextAlign.Center,
                 ),
             modifier = Modifier.fillMaxWidth()
+
         )
         Spacer(modifier = Modifier.height(20.dp))
 

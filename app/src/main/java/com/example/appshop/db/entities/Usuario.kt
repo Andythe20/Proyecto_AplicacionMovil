@@ -1,7 +1,9 @@
 package com.example.appshop.db.entities
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
+import java.time.LocalDate
 
 /**
  * @Entity (Entidad)
@@ -9,9 +11,16 @@ import androidx.room.PrimaryKey
  * Es la estructura o el "molde" de los datos que se guardarán.
  *
  * @param tableName = "users" define el nombre exacto de la tabla en la base de datos SQLite.
+ * @param indices = [...] se usa para definir índices en la tabla.
+ * @param unique = true en el índice 'email' asegura que no pueda haber dos filas
+ * con la misma dirección de correo electrónico. Intentar insertar un duplicado
+ * resultará en un error de Room/SQLite.
  * Si no se especifica, Room usaría el nombre de la clase ("User") como nombre de la tabla por defecto.
  */
-@Entity(tableName = "users")
+@Entity(
+    tableName = "users",
+    indices = [Index(value = ["email"], unique = true)] // Índice único en el campo email
+)
 data class User(
     /**
      * @PrimaryKey (Clave Primaria)
@@ -24,6 +33,8 @@ data class User(
      */
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
-    val email: String,
+    val email: String, // Único gracias al índice definido arriba
     val password: String,
+    val profileImageUri: String? = null,
+    val birthdate: LocalDate? = null
 )

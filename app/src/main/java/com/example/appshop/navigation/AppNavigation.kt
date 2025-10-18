@@ -1,6 +1,8 @@
 package com.example.appshop.navigation
 
 import LoginScreen
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -37,6 +39,7 @@ import com.example.appshop.viewmodel.AuthViewModelFactory
  *
  * @param modifier Modificador para el `NavHost`.
  */
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
@@ -95,7 +98,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         }
         composable("createProfile") {
             MainLayout(navController) { padding ->
-                CreateProfileScreen(modifier = Modifier.padding(padding))
+                CreateProfileScreen(modifier = Modifier.padding(padding), viewModel = viewModel)
             }
         }
 
