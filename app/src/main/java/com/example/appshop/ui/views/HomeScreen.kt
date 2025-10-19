@@ -4,12 +4,16 @@ import PromotionsSection
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocalOffer
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,20 +31,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.example.appshop.db.AppDatabase
-import com.example.appshop.db.repository.UserRepository
 import com.example.appshop.ui.components.AppDropdownMenu
 import com.example.appshop.ui.components.CarouselSection
 import com.example.appshop.ui.components.FooterSection
 import com.example.appshop.ui.components.HeaderSection
 import com.example.appshop.viewmodel.AuthViewModel
-import com.example.appshop.viewmodel.AuthViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -116,7 +115,28 @@ fun HomeScreen(
                 }
 
                 item {
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.LocalOffer,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Promociones disponibles!",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(25.dp))
                     PromotionsSection()
                 }
 
@@ -129,19 +149,3 @@ fun HomeScreen(
         }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    // Para satisfacer el parámetro `navController` de HomeScreen, creamos un
-    // NavController de prueba usando `rememberNavController()`. No realizará
-    // ninguna navegación real en la preview, pero permite que el Composable se renderice.
-    val navController = rememberNavController()
-
-    val context = LocalContext.current
-    val db = AppDatabase.getDatabase(context)
-    val repo = UserRepository(db.userDao())
-    val fakeViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(repo))
-
-    // Llamamos a nuestro Composable `HomeScreen` pasándole el navController de prueba.
-    HomeScreen(navController = navController, viewModel = fakeViewModel)
-}
