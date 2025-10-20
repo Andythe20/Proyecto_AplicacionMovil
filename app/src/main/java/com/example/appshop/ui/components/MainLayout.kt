@@ -41,7 +41,8 @@ fun MainLayout(
                     fontSize = 24.sp,
                     modifier = Modifier.padding(16.dp)
                 )
-                HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
+                HorizontalDivider(Modifier.padding(8.dp), DividerDefaults.Thickness, DividerDefaults.color)
+
 
                 // --- Inicio de los ítems del Drawer ---
                 NavigationDrawerItem(
@@ -53,6 +54,11 @@ fun MainLayout(
                         navController.navigate("home")
                     }
                 )
+
+                HorizontalDivider(
+                    Modifier.padding(vertical = 8.dp),
+                    DividerDefaults.Thickness,
+                    DividerDefaults.color)
 
                 // --- Carrito ---
                 NavigationDrawerItem(

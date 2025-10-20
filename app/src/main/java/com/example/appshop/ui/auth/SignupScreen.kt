@@ -1,6 +1,10 @@
 package com.example.appshop.ui.auth
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -24,26 +27,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.appshop.R
-import com.example.appshop.db.AppDatabase
-import com.example.appshop.db.repository.UserRepository
 import com.example.appshop.viewmodel.AuthViewModel
-import com.example.appshop.viewmodel.AuthViewModelFactory
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.lint.kotlin.metadata.Visibility
 import com.example.appshop.ui.theme.PacificoFontFamily
+import com.example.appshop.utils.validateInputText
 
 /**
  * Composable que representa la pantalla de registro de nuevos usuarios.
@@ -132,8 +130,14 @@ fun SignupScreen(
             isError = emailError != null,
             // Muestra el mensaje de error debajo si existe.
             supportingText = {
-                if (emailError != null) {
-                    Text(text = emailError!!)
+                AnimatedVisibility(
+                    visible = nombreError != null,
+                    enter = fadeIn(animationSpec = tween(300)),
+                    exit = fadeOut(animationSpec = tween(300))
+                ) {
+                    if (emailError != null) {
+                        Text(text = emailError!!)
+                    }
                 }
             }
         )
@@ -149,8 +153,15 @@ fun SignupScreen(
             modifier = Modifier.fillMaxWidth(),
             isError = nombreError != null,
             supportingText = {
-                if (nombreError != null) {
-                    Text(text = nombreError!!)
+
+                AnimatedVisibility(
+                    visible = nombreError != null,
+                    enter = fadeIn(animationSpec = tween(300)),
+                    exit = fadeOut(animationSpec = tween(300))
+                ) {
+                    if (nombreError != null) {
+                        Text(text = nombreError!!)
+                    }
                 }
             },
             singleLine = true
@@ -168,8 +179,14 @@ fun SignupScreen(
             modifier = Modifier.fillMaxWidth(),
             isError = contrasennaError != null,
             supportingText = {
-                if (contrasennaError != null) {
-                    Text(text = contrasennaError!!)
+                AnimatedVisibility(
+                    visible = contrasennaError != null,
+                    enter = fadeIn(animationSpec = tween(300)),
+                    exit = fadeOut(animationSpec = tween(300))
+                ) {
+                    if (contrasennaError != null) {
+                        Text(text = contrasennaError!!)
+                    }
                 }
             },
             singleLine = true,
@@ -210,8 +227,14 @@ fun SignupScreen(
             modifier = Modifier.fillMaxWidth(),
             isError = contrasennaValidarError != null,
             supportingText = {
-                if (contrasennaValidarError != null) {
-                    Text(text = contrasennaValidarError!!)
+                AnimatedVisibility(
+                    visible = contrasennaValidarError != null,
+                    enter = fadeIn(animationSpec = tween(300)),
+                    exit = fadeOut(animationSpec = tween(300))
+                ) {
+                    if (contrasennaValidarError != null) {
+                        Text(text = contrasennaValidarError!!)
+                    }
                 }
             },
             singleLine = true,
@@ -248,23 +271,13 @@ fun SignupScreen(
                 contrasennaValidarError = null
 
                 // Validación del Nombre
-                if (nombre.isBlank()) {
-                    nombreError = "El nombre no puede estar vacío"
-                }
+                nombreError = validacionNombre(nombre)
 
                 // Validación del Email
-                if (email.isBlank()) {
-                    emailError = "El correo no puede estar vacío"
-                } else if (!formatoCorreo(email)) {
-                    emailError = "El formato del correo no es válido"
-                }
+                emailError = validacionEmail(email)
 
                 // Validación de la Contraseña
-                if (contrasenna.isBlank()) {
-                    contrasennaError = "La contraseña no puede estar vacía"
-                } else if (!largoContrasena(contrasenna)) {
-                    contrasennaError = "La contraseña debe tener al menos 6 caracteres"
-                }
+                contrasennaError = validacionContrasenna(contrasenna)
 
                 // Validación de la Confirmación de Contraseña
                 if (contrasennaValidar.isBlank()) {
