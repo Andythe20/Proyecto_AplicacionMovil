@@ -74,7 +74,9 @@ fun AuthScreen(
 
         Button(
             onClick = {
-                navController.navigate("login")
+                navController.navigate("login"){
+                    popUpTo(0){ inclusive = true} // Limpia el backstack
+                }
             },
             modifier = Modifier.fillMaxWidth().height(60.dp),
         ) {
