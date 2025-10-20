@@ -107,6 +107,5 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 CartScreen()
             }
         }
-
     }
 }
