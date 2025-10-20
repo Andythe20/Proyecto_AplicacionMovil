@@ -51,7 +51,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
     val repo = remember { UserRepository(db.userDao()) }
     val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(repo))
 
-    NavHost(navController = navController, startDestination = "splash", modifier = modifier) {
+    NavHost(navController = navController, startDestination = "home", modifier = modifier) {
 
         composable ("splash"){
             SplashScreen(navController = navController)
@@ -93,7 +93,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         // --- Pantallas con Drawer lateral ---
         composable("home") {
             MainLayout(navController) { padding ->
-                HomeScreen(modifier.padding(padding), navController, viewModel)
+                HomeScreen(modifier.padding(padding), viewModel)
             }
         }
         composable("createProfile") {

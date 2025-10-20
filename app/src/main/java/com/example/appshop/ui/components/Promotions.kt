@@ -1,3 +1,5 @@
+package com.example.appshop.ui.components
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
