@@ -45,7 +45,7 @@ fun ImagePickerSection(
     ) { uri ->
         uri?.let {
             fotoUri.value = it
-            Toast.makeText(context, "Imagen seleccionada", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(context, "Imagen seleccionada", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -3,8 +3,12 @@ package com.example.appshop.ui.components
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
@@ -24,11 +28,13 @@ fun MainLayout(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var expanded by remember { mutableStateOf(false) }
+    var showLogoutDialog by remember { mutableStateOf(false) }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
+                // --- Encabezado del Drawer ---
                 Text(
                     "OnlyFlans",
                     style = MaterialTheme.typography.displayMedium,
@@ -36,25 +42,22 @@ fun MainLayout(
                     modifier = Modifier.padding(16.dp)
                 )
                 HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
+
+                // --- Inicio de los ítems del Drawer ---
                 NavigationDrawerItem(
                     label = { Text("Inicio") },
+                    icon = { Icon(Icons.Default.Home , contentDescription = null ) },
                     selected = false,
                     onClick = {
                         scope.launch { drawerState.close() }
                         navController.navigate("home")
                     }
                 )
-                NavigationDrawerItem(
-                    label = { Text("Crear Perfil") },
-                    selected = false,
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        navController.navigate("createProfile")
-                    }
-                )
 
+                // --- Carrito ---
                 NavigationDrawerItem(
                     label = { Text("Carrito") },
+                    icon = { Icon(Icons.Default.ShoppingCart, contentDescription = null ) },
                     selected = false,
                     onClick = {
                         scope.launch { drawerState.close() }
@@ -62,6 +65,45 @@ fun MainLayout(
                     }
                 )
 
+                // --- Historial de compras ---
+                // Futura implementación
+
+                // ---Separador ---
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    thickness = DividerDefaults.Thickness,
+                    color = DividerDefaults.color
+                )
+
+                // --- Perfil ---
+                NavigationDrawerItem(
+                    label = { Text("Perfil") },
+                    icon = { Icon(Icons.Default.Person, contentDescription = null )},
+                    selected = false,
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        navController.navigate("createProfile")
+                    }
+                )
+
+                // --- Separador ---
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    thickness = DividerDefaults.Thickness,
+                    color = DividerDefaults.color
+                )
+
+                // --- Cerrar sesión ---
+                NavigationDrawerItem(
+                    label = { Text("Cerrar sesión") },
+                    icon = { Icon(Icons.Default.Close, contentDescription = null) },
+                    selected = false,
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        showLogoutDialog = true
+                    },
+                    //modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
             }
         }
     ) {
@@ -95,5 +137,16 @@ fun MainLayout(
         ) { innerPadding ->
             content(innerPadding)
         }
+        // --- Diálogo de confirmación ---
+        LogoutConfirmationDialog(
+            showDialog = showLogoutDialog,
+            onDismiss = { showLogoutDialog = false },
+            onConfirmLogout = {
+                showLogoutDialog = false
+                navController.navigate("login") {
+                    popUpTo("home") { inclusive = true }
+                }
+            }
+        )
     }
 }

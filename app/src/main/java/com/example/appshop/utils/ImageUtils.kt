@@ -7,8 +7,6 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.compose.runtime.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 fun saveBitmapToGallery(context: Context, bitmap: Bitmap): Uri?{
     val filename = "perfil_${System.currentTimeMillis()}.jpg"
