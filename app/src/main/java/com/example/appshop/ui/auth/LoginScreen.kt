@@ -1,5 +1,6 @@
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -180,6 +182,23 @@ fun LoginScreen(
                 .height(50.dp),
         ) {
             Text(text = "Iniciar Sesión", fontSize = 18.sp)
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedButton(
+            onClick = {
+                navController.navigate("auth") {
+                    popUpTo("login") { inclusive = false } // No limpiar la pila
+                }
+            },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(
+                text = "Volver a la pantalla principal",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium
+            )
         }
     }
 }

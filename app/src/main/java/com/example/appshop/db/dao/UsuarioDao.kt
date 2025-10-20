@@ -77,10 +77,21 @@ interface UserDao {
      * `suspend` Esta función es una corrutina, lo que permite que Room la ejecute en un hilo
      * de segundo plano para no bloquear la interfaz de usuario (UI).
      */
-    @Query("UPDATE users SET name = :name, profileImageUri = :profileImageUri, birthdate = :birthdate WHERE email = :email")
+    @Query("""
+    UPDATE users 
+    SET 
+        name = :name, 
+        lastName = :lastName, 
+        address = :address, 
+        profileImageUri = :profileImageUri, 
+        birthdate = :birthdate 
+    WHERE email = :email
+    """)
     suspend fun updateUserProfile(
         email: String,
         name: String,
+        lastName: String?,
+        address: String?,
         profileImageUri: String?,
         birthdate: String?, // Deberá convertirse a String más adelante ya que room no soporta LocalDate directamente
     )

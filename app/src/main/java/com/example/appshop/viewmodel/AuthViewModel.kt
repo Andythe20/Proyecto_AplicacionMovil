@@ -95,13 +95,11 @@ class AuthViewModel(private val repository: UserRepository) : ViewModel() {
 
     /**
      * Actualiza el perfil del usuario logueado.
-     * @param name Nuevo nombre del usuario.
-     * @param imageUrl URI o ruta de la imagen (puede ser `null` si no hay foto).
-     * @param birthdate Fecha de nacimiento (como String, ej. "2000-05-10").
-     * @param onResult Callback que devuelve si la actualización fue exitosa y un mensaje descriptivo.
      */
     fun updateUserProfile(
         name: String,
+        lastName: String?,
+        address: String?,
         imageProfileUri: String?,
         birthdate: String?,
         onResult: (Boolean, String) -> Unit,
@@ -117,6 +115,8 @@ class AuthViewModel(private val repository: UserRepository) : ViewModel() {
                 repository.updateUserProfile(
                     email = user.email,
                     name = name,
+                    lastName = lastName,
+                    address = address,
                     imageProfileUri = imageProfileUri,
                     birthdate = birthdate
                 )
@@ -124,6 +124,8 @@ class AuthViewModel(private val repository: UserRepository) : ViewModel() {
                 // Actualizamos el estado del usuario logueado
                 loggedInUser = user.copy(
                     name = name,
+                    lastName = lastName,
+                    address = address,
                     profileImageUri = imageProfileUri,
                     birthdate = birthdate?.let { java.time.LocalDate.parse(it) }
                 )
@@ -136,7 +138,6 @@ class AuthViewModel(private val repository: UserRepository) : ViewModel() {
                     onResult(false, "Error al actualizar el perfil: ${e.message}")
                 }
             }
-
         }
     }
 }
