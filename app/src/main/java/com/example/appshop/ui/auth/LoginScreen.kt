@@ -1,4 +1,8 @@
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -101,9 +105,16 @@ fun LoginScreen(
             singleLine = true,
 
             isError = emailError != null || errorGeneral != null,
+
             supportingText = {
-                if (emailError != null) {
-                    Text(text = emailError!!)
+                AnimatedVisibility(
+                    visible = emailError != null,
+                    enter = fadeIn(animationSpec = tween(300)),
+                    exit = fadeOut(animationSpec = tween(300))
+                ) {
+                    if (emailError != null) {
+                        Text(text = emailError!!)
+                    }
                 }
             }
         )
@@ -122,9 +133,17 @@ fun LoginScreen(
             singleLine = true,
             isError = contrasenaError != null || errorGeneral != null,
             supportingText = {
-                if (contrasenaError != null) {
-                    Text(text = contrasenaError!!)
+
+                AnimatedVisibility(
+                    visible = emailError != null,
+                    enter = fadeIn(animationSpec = tween(300)),
+                    exit = fadeOut(animationSpec = tween(300))
+                ) {
+                    if (contrasenaError != null) {
+                        Text(text = contrasenaError!!)
+                    }
                 }
+
                 // Mostramos el error general (del ViewModel) aquí
                 if (errorGeneral != null) {
                     Text(text = errorGeneral!!, color = MaterialTheme.colorScheme.error)
@@ -192,11 +211,14 @@ fun LoginScreen(
                     popUpTo("login") { inclusive = false } // No limpiar la pila
                 }
             },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .fillMaxWidth()
+                .height(50.dp)
         ) {
             Text(
                 text = "Volver a la pantalla principal",
-                fontSize = 16.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Medium
             )
         }
