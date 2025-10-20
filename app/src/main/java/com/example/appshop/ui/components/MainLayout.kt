@@ -54,6 +54,8 @@ fun MainLayout(
                     }
                 )
 
+                HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
+
                 // --- Carrito ---
                 NavigationDrawerItem(
                     label = { Text("Carrito") },

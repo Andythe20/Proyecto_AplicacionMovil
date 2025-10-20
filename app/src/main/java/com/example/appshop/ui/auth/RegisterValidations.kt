@@ -1,5 +1,7 @@
 package com.example.appshop.ui.auth
 
+import com.example.appshop.utils.validateInputText
+
 
 fun formatoCorreo(correo:String):Boolean{
     val regex = Regex("^[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9]+$")
@@ -12,6 +14,16 @@ fun validarContrasena(contrasena: String, confirmContrasena: String): Boolean {
     }
     else{
         return true
+    }
+}
+
+fun validacionNombre(nombre: String): String? {
+    if (nombre.isBlank()) {
+        return "El nombre no puede estar vacío"
+    } else if(nombre.length < 3){
+        return validateInputText("Nombre usuario", nombre)
+    } else {
+        return null
     }
 }
 

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -24,26 +23,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.appshop.R
-import com.example.appshop.db.AppDatabase
-import com.example.appshop.db.repository.UserRepository
 import com.example.appshop.viewmodel.AuthViewModel
-import com.example.appshop.viewmodel.AuthViewModelFactory
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.lint.kotlin.metadata.Visibility
 import com.example.appshop.ui.theme.PacificoFontFamily
+import com.example.appshop.utils.validateInputText
 
 /**
  * Composable que representa la pantalla de registro de nuevos usuarios.
@@ -248,9 +242,7 @@ fun SignupScreen(
                 contrasennaValidarError = null
 
                 // Validación del Nombre
-                if (nombre.isBlank()) {
-                    nombreError = "El nombre no puede estar vacío"
-                }
+                nombreError = validacionNombre(nombre)
 
                 // Validación del Email
                 if (email.isBlank()) {
