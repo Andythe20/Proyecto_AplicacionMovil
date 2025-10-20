@@ -44,6 +44,7 @@ fun AppDropdownMenu( // Renombrado para mayor claridad
             leadingIcon = { Icon(Icons.Outlined.Person, contentDescription = null) },
             onClick = {
                 // Aquí va la lógica de navegación
+                navController.navigate("createProfile")
                 onDismissRequest() // Cierra el menú
             }
         )

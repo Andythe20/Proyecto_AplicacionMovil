@@ -44,6 +44,7 @@ fun CreateProfileScreen(
     var birthdate by remember {
         mutableStateOf(user?.birthdate ?: LocalDate.now())
     }
+    var birthdateError by remember { mutableStateOf<String?>(null) }
 
     // Imagen del perfil
     val fotoUri = rememberProfileImage(user?.profileImageUri)
@@ -128,9 +129,25 @@ fun CreateProfileScreen(
         DatePickerField(
             label = "Fecha de nacimiento",
             selectedDate = birthdate,
-            onDateSelected = { birthdate = it },
+            onDateSelected = {
+                if(it.isAfter(LocalDate.now())){
+                    birthdateError = "La fecha no puede ser futura"
+                } else {
+                    birthdate = it
+                    birthdateError = null
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         )
+
+        birthdateError?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.align(Alignment.Start)
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -138,6 +155,7 @@ fun CreateProfileScreen(
         Button(
             onClick = {
                 if (usernameError == null && lastnameError == null && addressError == null &&
+                    birthdateError == null &&
                     username.isNotBlank() && lastname.isNotBlank() && address.isNotBlank()
                 ) {
                     viewModel.updateUserProfile(
@@ -150,7 +168,7 @@ fun CreateProfileScreen(
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(context, "Revisa los campos", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Revisa los campos, existen valores que no son válidos", Toast.LENGTH_SHORT).show()
                 }
             },
             modifier = Modifier.fillMaxWidth()

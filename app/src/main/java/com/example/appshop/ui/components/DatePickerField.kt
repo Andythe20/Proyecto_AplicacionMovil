@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -27,6 +28,7 @@ fun DatePickerField(
     modifier: Modifier = Modifier
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
 
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = selectedDate
@@ -41,7 +43,10 @@ fun DatePickerField(
         readOnly = true,
         label = { Text(label) },
         trailingIcon = {
-            IconButton(onClick = { showDatePicker = true }) {
+            IconButton(onClick = {
+                focusManager.clearFocus()
+                showDatePicker = true
+            }) {
                 Icon(Icons.Filled.CalendarToday, contentDescription = "Seleccionar fecha")
             }
         },
