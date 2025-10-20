@@ -27,6 +27,27 @@ fun validacionNombre(nombre: String): String? {
     }
 }
 
+fun validacionEmail(email: String): String?{
+    if (email.isBlank()) {
+        return "El correo no puede estar vacío"
+    } else if (!formatoCorreo(email)) {
+        return "El formato del correo no es válido"
+    } else{
+        return null
+    }
+}
+
+fun validacionContrasenna(contrasenna: String): String?{
+    if (contrasenna.isBlank()) {
+        return "La contraseña no puede estar vacía"
+    } else if (!largoContrasena(contrasenna)) {
+        return "La contraseña debe tener al menos 6 caracteres"
+    } else{
+        return null
+    }
+}
+
+
 fun validarCampos(nombre: String, contrasena: String, validarContrasena: String, correo: String): Boolean{
     if (nombre.isBlank() || contrasena.isBlank() || validarContrasena.isBlank() || correo.isBlank()){
         return false

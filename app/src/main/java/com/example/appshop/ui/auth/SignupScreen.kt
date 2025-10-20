@@ -1,6 +1,10 @@
 package com.example.appshop.ui.auth
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -126,8 +130,14 @@ fun SignupScreen(
             isError = emailError != null,
             // Muestra el mensaje de error debajo si existe.
             supportingText = {
-                if (emailError != null) {
-                    Text(text = emailError!!)
+                AnimatedVisibility(
+                    visible = nombreError != null,
+                    enter = fadeIn(animationSpec = tween(300)),
+                    exit = fadeOut(animationSpec = tween(300))
+                ) {
+                    if (emailError != null) {
+                        Text(text = emailError!!)
+                    }
                 }
             }
         )
@@ -143,8 +153,15 @@ fun SignupScreen(
             modifier = Modifier.fillMaxWidth(),
             isError = nombreError != null,
             supportingText = {
-                if (nombreError != null) {
-                    Text(text = nombreError!!)
+
+                AnimatedVisibility(
+                    visible = nombreError != null,
+                    enter = fadeIn(animationSpec = tween(300)),
+                    exit = fadeOut(animationSpec = tween(300))
+                ) {
+                    if (nombreError != null) {
+                        Text(text = nombreError!!)
+                    }
                 }
             },
             singleLine = true
@@ -162,8 +179,14 @@ fun SignupScreen(
             modifier = Modifier.fillMaxWidth(),
             isError = contrasennaError != null,
             supportingText = {
-                if (contrasennaError != null) {
-                    Text(text = contrasennaError!!)
+                AnimatedVisibility(
+                    visible = contrasennaError != null,
+                    enter = fadeIn(animationSpec = tween(300)),
+                    exit = fadeOut(animationSpec = tween(300))
+                ) {
+                    if (contrasennaError != null) {
+                        Text(text = contrasennaError!!)
+                    }
                 }
             },
             singleLine = true,
@@ -204,8 +227,14 @@ fun SignupScreen(
             modifier = Modifier.fillMaxWidth(),
             isError = contrasennaValidarError != null,
             supportingText = {
-                if (contrasennaValidarError != null) {
-                    Text(text = contrasennaValidarError!!)
+                AnimatedVisibility(
+                    visible = contrasennaValidarError != null,
+                    enter = fadeIn(animationSpec = tween(300)),
+                    exit = fadeOut(animationSpec = tween(300))
+                ) {
+                    if (contrasennaValidarError != null) {
+                        Text(text = contrasennaValidarError!!)
+                    }
                 }
             },
             singleLine = true,
@@ -245,18 +274,10 @@ fun SignupScreen(
                 nombreError = validacionNombre(nombre)
 
                 // Validación del Email
-                if (email.isBlank()) {
-                    emailError = "El correo no puede estar vacío"
-                } else if (!formatoCorreo(email)) {
-                    emailError = "El formato del correo no es válido"
-                }
+                emailError = validacionEmail(email)
 
                 // Validación de la Contraseña
-                if (contrasenna.isBlank()) {
-                    contrasennaError = "La contraseña no puede estar vacía"
-                } else if (!largoContrasena(contrasenna)) {
-                    contrasennaError = "La contraseña debe tener al menos 6 caracteres"
-                }
+                contrasennaError = validacionContrasenna(contrasenna)
 
                 // Validación de la Confirmación de Contraseña
                 if (contrasennaValidar.isBlank()) {

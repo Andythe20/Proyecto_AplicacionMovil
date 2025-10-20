@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.appshop.ui.auth.validacionNombre
 import com.example.appshop.ui.components.DatePickerField
 import com.example.appshop.ui.components.ImagePickerSection
 import com.example.appshop.utils.rememberProfileImage
@@ -154,6 +155,8 @@ fun CreateProfileScreen(
         // --- Botón Guardar ---
         Button(
             onClick = {
+                usernameError = validacionNombre(username)
+
                 if (usernameError == null && lastnameError == null && addressError == null &&
                     birthdateError == null &&
                     username.isNotBlank() && lastname.isNotBlank() && address.isNotBlank()
