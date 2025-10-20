@@ -15,32 +15,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.appshop.ui.components.DatePickerField
 import com.example.appshop.ui.components.ImagePickerSection
 import com.example.appshop.utils.rememberProfileImage
 import com.example.appshop.utils.validateInputText
 import com.example.appshop.viewmodel.AuthViewModel
 import java.time.LocalDate
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun CreateProfileView(viewModel: AuthViewModel = viewModel()) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Perfil de Usuario") }
-            )
-        }
-    ) { innerPadding ->
-        CreateProfileScreen(
-            modifier = Modifier.padding(innerPadding),
-            viewModel = viewModel
-        )
-    }
-}
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -53,7 +34,12 @@ fun CreateProfileScreen(
 
     // === Estados del formulario ===
     var username by remember { mutableStateOf(user?.name ?: "") }
+    var lastname by remember { mutableStateOf(user?.lastName ?: "") }
+    var address by remember { mutableStateOf(user?.address ?: "") }
+
     var usernameError by remember { mutableStateOf<String?>(null) }
+    var lastnameError by remember { mutableStateOf<String?>(null) }
+    var addressError by remember { mutableStateOf<String?>(null) }
 
     var birthdate by remember {
         mutableStateOf(user?.birthdate ?: LocalDate.now())
@@ -86,7 +72,6 @@ fun CreateProfileScreen(
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
-
         usernameError?.let {
             Text(
                 text = it,
@@ -96,7 +81,50 @@ fun CreateProfileScreen(
             )
         }
 
-        // --- Campo Fecha de Nacimiento (modularizado) ---
+        // --- Campo Apellidos ---
+        OutlinedTextField(
+            value = lastname,
+            onValueChange = {
+                lastname = it
+                lastnameError = validateInputText("Apellidos", it)
+            },
+            label = { Text("Apellidos") },
+            isError = lastnameError != null,
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+        lastnameError?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.align(Alignment.Start)
+            )
+        }
+
+        // --- Campo Dirección ---
+        OutlinedTextField(
+            value = address,
+            onValueChange = {
+                address = it
+                addressError = validateInputText("Dirección", it, minLength = 5)
+            },
+            label = { Text("Dirección") },
+            isError = addressError != null,
+            singleLine = false,
+            maxLines = 3,
+            modifier = Modifier.fillMaxWidth()
+        )
+        addressError?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.align(Alignment.Start)
+            )
+        }
+
+        // --- Fecha de Nacimiento (modularizado) ---
         DatePickerField(
             label = "Fecha de nacimiento",
             selectedDate = birthdate,
@@ -109,9 +137,13 @@ fun CreateProfileScreen(
         // --- Botón Guardar ---
         Button(
             onClick = {
-                if (usernameError == null && username.isNotBlank()) {
+                if (usernameError == null && lastnameError == null && addressError == null &&
+                    username.isNotBlank() && lastname.isNotBlank() && address.isNotBlank()
+                ) {
                     viewModel.updateUserProfile(
                         name = username,
+                        lastName = lastname,
+                        address = address,
                         imageProfileUri = fotoUri.value?.toString(),
                         birthdate = birthdate.toString()
                     ) { success, message ->
@@ -128,11 +160,4 @@ fun CreateProfileScreen(
             Text("Guardar cambios")
         }
     }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun CreateProfilePreview() {
-    CreateProfileView()
 }

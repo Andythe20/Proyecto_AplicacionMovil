@@ -33,8 +33,10 @@ data class User(
      */
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
+    val lastName: String? = null,
     val email: String, // Único gracias al índice definido arriba
     val password: String,
+    val address: String? = null,
     val profileImageUri: String? = null,
     val birthdate: LocalDate? = null
 )

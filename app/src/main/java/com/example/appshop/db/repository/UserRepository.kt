@@ -50,19 +50,23 @@ class UserRepository(private val userDao: UserDao) {
     }
 
     /**
-     * Actualiza el perfil de un usuario en la base de datos.
+     * Actualiza el perfil de un usuario existente.
      *
-     * @param email El email del usuario (identificador único).
+     * @param email El email del usuario a actualizar (identificador único).
      * @param name El nuevo nombre del usuario.
+     * @param lastName El nuevo apellido del usuario (opcional).
+     * @param address La nueva dirección del usuario (opcional).
      * @param imageProfileUri La nueva URI de la imagen de perfil (opcional).
-     * @param birthdate La nueva fecha de nacimiento como String (opcional).
+     * @param birthdate La nueva fecha de nacimiento (opcional).
      */
     suspend fun updateUserProfile(
         email: String, // Usamos el email como identificador único del usuario
         name: String,
+        lastName: String?,
+        address: String?,
         imageProfileUri: String?,
         birthdate: String?,
     ){
-        userDao.updateUserProfile(email, name, imageProfileUri, birthdate)
+        userDao.updateUserProfile(email, name, lastName, address, imageProfileUri, birthdate)
     }
 }
