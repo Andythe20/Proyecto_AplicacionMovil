@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.compose.animation.core.lint)
     implementation(libs.androidx.ui)
+    implementation(libs.androidx.compose.material3.window.size.class1)
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
 

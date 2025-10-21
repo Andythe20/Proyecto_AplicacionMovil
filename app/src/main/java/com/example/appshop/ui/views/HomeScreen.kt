@@ -56,9 +56,10 @@ fun HomeScreen(
 
     // 1. El Box raíz recibe el modifier para respetar el padding del Scaffold.
     Box(modifier = modifier) {
+        PatternBackground() // Fondo
+
         // 2. Un segundo Box crea la pila para el fondo y el contenido.
         Box(modifier = Modifier.fillMaxSize()) {
-            PatternBackground() // Fondo
 
             // 3. BoxWithConstraints ahora está en el contexto correcto para medir.
             BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
@@ -81,13 +82,13 @@ fun HomeScreen(
                                     .fillMaxWidth()
                                     .padding(horizontal = 16.dp)
                                     .height(70.dp)
-                                    .border(3.dp, MaterialTheme.colorScheme.primary, MaterialTheme.shapes.medium)
-                                    .background(white)
+                                    .border(3.dp, MaterialTheme.colorScheme.onBackground, MaterialTheme.shapes.medium)
+                                    .background(MaterialTheme.colorScheme.background)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.LocalOffer,
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
+                                    tint = MaterialTheme.colorScheme.onBackground,
                                     modifier = Modifier.size(24.dp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
@@ -95,7 +96,7 @@ fun HomeScreen(
                                 Text(
                                     text = "Promociones disponibles!",
                                     style = MaterialTheme.typography.titleLarge,
-                                    color = MaterialTheme.colorScheme.primary,
+                                    color = MaterialTheme.colorScheme.onBackground,
                                     fontWeight = FontWeight.SemiBold
                                 )
                             }
@@ -108,8 +109,7 @@ fun HomeScreen(
                             Row(
                                 modifier = Modifier
                                     .padding(16.dp)
-                                    .border(3.dp, MaterialTheme.colorScheme.primary, MaterialTheme.shapes.medium)
-                                    .background(white)
+                                    .border(3.dp, MaterialTheme.colorScheme.onBackground, MaterialTheme.shapes.medium)
                             ) {
                                 FooterSection(openUrl) 
                             }
@@ -164,7 +164,7 @@ fun HomeScreen(
                                             .fillMaxWidth()
                                             .padding(16.dp)
                                             .border(3.dp, MaterialTheme.colorScheme.primary, MaterialTheme.shapes.medium)
-                                            .background(white)
+                                            .background(MaterialTheme.colorScheme.background)
                                     ){
                                         FooterSection(openUrl)
                                     }

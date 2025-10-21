@@ -1,5 +1,6 @@
 package com.example.appshop.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,7 +25,7 @@ import com.example.appshop.ui.theme.PacificoFontFamily
 fun FooterSection(openUrl: (String) -> Unit){
 // --- SECCIÓN DEL NAVBAR ---
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background),
         // Esto centrará horizontalmente todo el contenido de la columna.
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -35,7 +36,8 @@ fun FooterSection(openUrl: (String) -> Unit){
             text = "¡Síguenos en nuestras redes sociales!",
             fontFamily = PacificoFontFamily,
             fontSize = 20.sp,
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         // Un espacio entre el título y los iconos.

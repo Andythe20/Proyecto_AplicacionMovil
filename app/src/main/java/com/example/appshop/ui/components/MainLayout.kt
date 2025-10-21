@@ -14,10 +14,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
+import com.example.appshop.ui.theme.PacificoFontFamily
+import com.example.appshop.ui.theme.LatoFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,6 +32,18 @@ fun MainLayout(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var showLogoutDialog by remember { mutableStateOf(false) }
+
+    // Definir estilos de texto personalizados
+    val appBarTitleStyle = TextStyle(
+        fontFamily = PacificoFontFamily, // Usar Pacifico para el título
+        fontSize = 20.sp
+    )
+
+    val drawerTitleStyle = TextStyle(
+        fontFamily = PacificoFontFamily,
+        fontSize = 24.sp
+    )
+
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -46,26 +61,30 @@ fun MainLayout(
                 }
                 Text(
                     "OnlyFlans",
-                    style = MaterialTheme.typography.displayMedium,
+                    style = drawerTitleStyle,
                     modifier = Modifier.padding(16.dp)
                 )
                 HorizontalDivider()
 
                 NavigationDrawerItem(
-                    label = { Text("Inicio") },
+                    label = { Text(
+                        "Inicio",
+                        style = TextStyle(fontFamily = LatoFontFamily)) },
                     icon = { Icon(Icons.Default.Home, contentDescription = null) },
                     selected = false,
                     onClick = { scope.launch { drawerState.close() }; navController.navigate("home") }
                 )
                 NavigationDrawerItem(
-                    label = { Text("Carrito") },
+                    label = { Text("Carrito", style = TextStyle(fontFamily = LatoFontFamily)) },
                     icon = { Icon(Icons.Default.ShoppingCart, contentDescription = null) },
                     selected = false,
                     onClick = { scope.launch { drawerState.close() }; navController.navigate("cart") }
                 )
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                 NavigationDrawerItem(
-                    label = { Text("Perfil") },
+                    label = {
+                        Text("Cerrar sesión", style = TextStyle(fontFamily = LatoFontFamily))
+                    },
                     icon = { Icon(Icons.Default.Person, contentDescription = null) },
                     selected = false,
                     onClick = { scope.launch { drawerState.close() }; navController.navigate("createProfile") }
@@ -86,7 +105,7 @@ fun MainLayout(
                     title = {
                         Text(
                             text = title,
-                            style = MaterialTheme.typography.titleLarge
+                            style = appBarTitleStyle
                         )
                     },
                     navigationIcon = {
