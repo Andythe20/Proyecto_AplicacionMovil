@@ -81,41 +81,11 @@ fun PromotionsSection() {
                         Text(promo.description, fontSize = 14.sp)
                     }
 
-                    // Botón compartir alineado a la derecha
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        TextButton(
-                            onClick = {
-                                val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                    type = "text/plain"
-                                    putExtra(
-                                        Intent.EXTRA_TEXT,
-                                        "🔥 ${promo.title} 🔥\n${promo.description}\nConoce más en 👉 https://onlyflans.netlify.app"
-                                    )
-                                }
-                                context.startActivity(
-                                    Intent.createChooser(shareIntent, "Compartir promoción vía")
-                                )
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Share,
-                                contentDescription = "Compartir promoción",
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = "Compartir",
-                                color = MaterialTheme.colorScheme.primary,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                    }
+                    ShareButton(
+                        title = promo.title,
+                        description = promo.description,
+                        url = "https://onlyflans.netlify.app/"
+                    )
                 }
             }
         }
