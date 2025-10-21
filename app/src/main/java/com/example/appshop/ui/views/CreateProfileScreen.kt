@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.appshop.ui.auth.validacionNombre
 import com.example.appshop.ui.components.DatePickerField
 import com.example.appshop.ui.components.ImagePickerSection
@@ -28,7 +29,8 @@ import java.time.LocalDate
 @Composable
 fun CreateProfileScreen(
     modifier: Modifier = Modifier,
-    viewModel: AuthViewModel
+    viewModel: AuthViewModel,
+    navController: NavHostController
 ) {
     val context = LocalContext.current
     val user = viewModel.loggedInUser
@@ -169,6 +171,12 @@ fun CreateProfileScreen(
                         birthdate = birthdate.toString()
                     ) { success, message ->
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+
+                        if(success){
+                            navController.navigate("home") {
+                                popUpTo("createProfile") { inclusive = true }
+                            }
+                        }
                     }
                 } else {
                     Toast.makeText(context, "Revisa los campos, existen valores que no son válidos", Toast.LENGTH_SHORT).show()
