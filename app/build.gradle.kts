@@ -43,6 +43,13 @@ android {
 
 dependencies {
 
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    // Coil (para cargar imágenes)
+    implementation("io.coil-kt:coil-compose:2.7.0")
     implementation("com.google.accompanist:accompanist-pager:0.32.0")
     implementation("androidx.compose.material:material-icons-extended-android:1.6.7")
     implementation("androidx.room:room-runtime:2.6.1")
@@ -58,11 +65,16 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
 
     // Para preparar imagenes
-    implementation("io.coil-kt:coil-compose:2.5.0")
+    //implementation("io.coil-kt:coil-compose:2.5.0")
 
     // Para corrutinas
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+
+    // Jetpack Compose
+    implementation("androidx.compose.ui:ui:1.7.0")
+    implementation("androidx.compose.material3:material3:1.3.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

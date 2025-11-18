@@ -24,8 +24,10 @@ import com.example.appshop.db.repository.UserRepository
 import com.example.appshop.ui.SplashScreen
 import com.example.appshop.ui.views.CartScreen
 import com.example.appshop.ui.views.CreateProfileScreen
+import com.example.appshop.ui.views.ProductListScreen
 import com.example.appshop.viewmodel.AuthViewModel
 import com.example.appshop.viewmodel.AuthViewModelFactory
+import com.example.appshop.viewmodel.ProductViewModel
 
 
 /**
@@ -50,6 +52,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
     val db = remember { AppDatabase.getDatabase(context) }
     val repo = remember { UserRepository(db.userDao()) }
     val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(repo))
+    val viewProductModel: ProductViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = "splash", modifier = modifier) {
 
@@ -101,6 +104,16 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 CreateProfileScreen(
                     modifier = Modifier.padding(padding),
                     viewModel = viewModel,
+                    navController = navController
+                )
+            }
+        }
+
+        composable("products"){
+            MainLayout(navController) { padding ->
+                ProductListScreen(
+                    modifier = Modifier.padding(padding),
+                    viewModel = viewProductModel,
                     navController = navController
                 )
             }
