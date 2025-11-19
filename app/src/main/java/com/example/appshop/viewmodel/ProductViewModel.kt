@@ -53,6 +53,7 @@ class ProductViewModel : ViewModel() {
 
     init {
         Log.d("ProductViewModel", "INIT DEL VIEWMODEL EJECUTADO")
+        Log.d("ProductViewModel", "URL base: http://107.22.181.238/api/v1/")
 
         // Inicializamos el repositorio aquí
         val apiService: IApiService = RetroFitInstance.api
@@ -72,6 +73,9 @@ class ProductViewModel : ViewModel() {
 
                 Log.d("ProductViewModel", "Productos desde API: $productList")
                 Log.d("ProductViewModel", "Cantidad: ${productList?.size}")
+
+                Log.d("ProductViewModel", "Respuesta recibida: ${productList != null}")
+                Log.d("ProductViewModel", "Cantidad de productos: ${productList?.size ?: 0}")
                 if (productList != null) {
                     // Actualiza la lista con los datos de la API
                     _products.value = productList
