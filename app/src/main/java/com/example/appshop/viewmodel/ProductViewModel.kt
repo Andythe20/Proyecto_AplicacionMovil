@@ -21,9 +21,11 @@ class ProductViewModel : ViewModel() {
     private val _products = MutableStateFlow<List<Product>>(emptyList())
     private val _isLoading = MutableStateFlow(false)
     private val _isRefreshing = MutableStateFlow(false)
+    private val _errorMessage = MutableStateFlow<String?>(null)
     val products: StateFlow<List<Product>> = _products.asStateFlow()
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
     init {
         Log.d("ProductViewModel", "INIT DEL VIEWMODEL EJECUTADO")
@@ -57,10 +59,12 @@ class ProductViewModel : ViewModel() {
                     // Log para logcat
                     Log.e("ProductViewModel", "La respuesta de la API fue nula o fallida.")
                     _products.value = emptyList() // Asegurarse de que la lista quede vacía
+                    _errorMessage.value = "No se pudo obtener los productos."
                 }
             } catch (e: Exception) {
                 // Captura cualquier otro error inesperado durante la llamada
                 Log.e("ProductViewModel", "Error al cargar productos: ${e.message}")
+                _errorMessage.value = "Error de conexión con el servidor."
             } finally {
                 _isLoading.value = false // Indica que la carga ha terminado (sea con éxito o error)
             }
@@ -73,18 +77,24 @@ class ProductViewModel : ViewModel() {
             _isRefreshing.value = true
             try {
                 val productList = repository.getProducts()
-                Log.d("ProductViewModel", "Refresh - Productos desde API: ${productList?.size}")
+                //Log.d("ProductViewModel", "Refresh - Productos desde API: ${productList?.size}")
                 if (productList != null) {
                     _products.value = productList
                 } else {
-                    Log.e("ProductViewModel", "Refresh - La respuesta de la API fue nula")
+                    //Log.e("ProductViewModel", "Refresh - La respuesta de la API fue nula")
                     _products.value = emptyList()
+                    _errorMessage.value = "Error al refrescar productos."
                 }
             } catch (e: Exception) {
                 Log.e("ProductViewModel", "Error al refrescar productos: ${e.message}")
+                _errorMessage.value = "No se pudo conectar al servidor."
             } finally {
                 _isRefreshing.value = false
             }
         }
+    }
+
+    fun clearError(){
+        _errorMessage.value = null
     }
 }
