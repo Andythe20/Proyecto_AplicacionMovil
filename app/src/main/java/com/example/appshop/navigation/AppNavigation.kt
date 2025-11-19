@@ -98,7 +98,9 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         // --- Pantallas con Drawer lateral ---
         composable("home") {
             MainLayout(navController) { padding ->
-                HomeScreen(modifier.padding(padding), viewModel)
+                HomeScreen(modifier.padding(padding),
+                    viewModel,
+                    navController = navController)
             }
         }
         composable("createProfile") {

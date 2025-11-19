@@ -73,6 +73,10 @@ dependencies {
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
 
+    //SwipeRefresh de material
+    implementation("androidx.compose.material:material:1.5.4")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.30.1")
+// verifica la última versión
     // Para preparar imagenes
     //implementation("io.coil-kt:coil-compose:2.5.0")
 
