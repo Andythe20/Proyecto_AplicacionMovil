@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -80,15 +81,25 @@ fun MainLayout(
                     selected = false,
                     onClick = { scope.launch { drawerState.close() }; navController.navigate("cart") }
                 )
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
                 NavigationDrawerItem(
                     label = {
-                        Text("Cerrar sesión", style = TextStyle(fontFamily = LatoFontFamily))
+                        Text("Mi perfil", style = TextStyle(fontFamily = LatoFontFamily))
                     },
                     icon = { Icon(Icons.Default.Person, contentDescription = null) },
                     selected = false,
                     onClick = { scope.launch { drawerState.close() }; navController.navigate("createProfile") }
                 )
+
+                NavigationDrawerItem(
+                    label = {
+                        Text("Productos", style = TextStyle(fontFamily = LatoFontFamily))
+                    },
+                    icon = { Icon(Icons.Default.Info, contentDescription = null) },
+                    selected = false,
+                    onClick = { scope.launch { drawerState.close() }; navController.navigate("products") }
+                )
+
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                 NavigationDrawerItem(
                     label = { Text("Cerrar sesión") },

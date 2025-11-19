@@ -28,7 +28,7 @@ fun ProductCard(product: Product) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Image(
-                painter = rememberAsyncImagePainter(product.fotoUri),
+                painter = rememberAsyncImagePainter(product.url),
                 contentDescription = product.nombre,
                 modifier = Modifier
                     .fillMaxWidth()

@@ -26,7 +26,7 @@ fun ProductListScreen(
     navController: NavController
 
 ) {
-    val products by viewModel.productos.collectAsState()
+    val products by viewModel.products.collectAsState()
 
     Scaffold (
         topBar = {
