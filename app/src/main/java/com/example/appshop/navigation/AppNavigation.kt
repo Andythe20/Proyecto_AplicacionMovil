@@ -25,9 +25,11 @@ import com.example.appshop.ui.SplashScreen
 import com.example.appshop.ui.views.CartScreen
 import com.example.appshop.ui.views.CreateProfileScreen
 import com.example.appshop.ui.views.ProductListScreen
+import com.example.appshop.ui.views.RecipeSearchScreen
 import com.example.appshop.viewmodel.AuthViewModel
 import com.example.appshop.viewmodel.AuthViewModelFactory
 import com.example.appshop.viewmodel.ProductViewModel
+import com.example.appshop.viewmodel.RecipesViewModel
 
 
 /**
@@ -122,6 +124,12 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         composable(route = "cart") {
             MainLayout(navController) { padding ->
                 CartScreen()
+            }
+        }
+
+        composable("recipeSearch") {
+            MainLayout(navController) { padding ->
+                RecipeSearchScreen()
             }
         }
     }
