@@ -2,6 +2,7 @@ package com.example.appshop.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -18,11 +19,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.appshop.R
 import kotlinx.coroutines.delay
 
 @Composable
-fun CarouselSection() {
+fun CarouselSection(navController: NavController) {
     val images = listOf(
         R.drawable.alfajores2,
         R.drawable.cafe_y_queque,
@@ -73,6 +75,10 @@ fun CarouselSection() {
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth()
+                    .clickable {
+                        // Navegar a la pantalla de detalles del producto
+                        navController.navigate("products")
+                    }
             ) {
                 Box(
                     modifier = Modifier.fillMaxSize()

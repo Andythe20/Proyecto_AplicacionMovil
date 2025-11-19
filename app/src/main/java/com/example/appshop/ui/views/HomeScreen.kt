@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.appshop.ui.components.CarouselSection
 import com.example.appshop.ui.components.FooterSection
 import com.example.appshop.ui.components.HeaderSection
@@ -42,8 +43,9 @@ import com.example.appshop.viewmodel.AuthViewModel
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun HomeScreen(
-    modifier: Modifier = Modifier, // Este modifier contiene el padding del Scaffold
-    viewModel: AuthViewModel
+    modifier: Modifier = Modifier,
+    viewModel: AuthViewModel,
+    navController: NavController
 ){
     val context = LocalContext.current
     val openUrl = { url: String ->
@@ -72,7 +74,7 @@ fun HomeScreen(
                         item { HeaderSection(username) }
                         item { 
                             Spacer(modifier = Modifier.height(16.dp)) 
-                            CarouselSection() 
+                            CarouselSection(navController = navController)
                         }
                         item {
                             Row(
@@ -126,7 +128,7 @@ fun HomeScreen(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Spacer(modifier = Modifier.height(16.dp))
-                                    CarouselSection()
+                                    CarouselSection(navController = navController)
                                 }
                                 Column(
                                     modifier = Modifier.weight(1f),
