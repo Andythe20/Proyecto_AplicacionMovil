@@ -28,6 +28,7 @@ import com.example.appshop.ui.views.ProductListScreen
 import com.example.appshop.ui.views.RecipeSearchScreen
 import com.example.appshop.viewmodel.AuthViewModel
 import com.example.appshop.viewmodel.AuthViewModelFactory
+import com.example.appshop.viewmodel.CartViewModel
 import com.example.appshop.viewmodel.ProductViewModel
 import com.example.appshop.viewmodel.RecipesViewModel
 
@@ -56,7 +57,12 @@ fun AppNavigation(modifier: Modifier = Modifier) {
     val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(repo))
     val viewProductModel: ProductViewModel = viewModel()
 
-    NavHost(navController = navController, startDestination = "recipeSearch", modifier = modifier) {
+
+    val cartViewModel: CartViewModel = viewModel()
+
+    val recipesViewModel: RecipesViewModel = viewModel()
+
+    NavHost(navController = navController, startDestination = "splash", modifier = modifier) {
 
         composable("splash") {
             SplashScreen(navController = navController)
@@ -116,16 +122,17 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         composable("products"){
             MainLayout(navController) { padding ->
                 ProductListScreen(
-                    modifier = Modifier.padding(padding),
                     viewModel = viewProductModel,
-                    navController = navController
+                    cartViewModel = cartViewModel
                 )
             }
         }
 
         composable(route = "cart") {
             MainLayout(navController) { padding ->
-                CartScreen()
+                CartScreen(
+                    cartViewModel = cartViewModel
+                )
             }
         }
 
@@ -133,7 +140,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
             MainLayout(navController) { padding ->
                 RecipeSearchScreen(
                     modifier = Modifier.padding(padding),
-                    viewModel = RecipesViewModel(),
+                    viewModel = recipesViewModel,
                     navController = navController
                 )
             }
