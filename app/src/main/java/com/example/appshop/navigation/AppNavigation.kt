@@ -60,6 +60,8 @@ fun AppNavigation(modifier: Modifier = Modifier) {
 
     val cartViewModel: CartViewModel = viewModel()
 
+    val recipesViewModel: RecipesViewModel = viewModel()
+
     NavHost(navController = navController, startDestination = "splash", modifier = modifier) {
 
         composable("splash") {
@@ -138,7 +140,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
             MainLayout(navController) { padding ->
                 RecipeSearchScreen(
                     modifier = Modifier.padding(padding),
-                    viewModel = RecipesViewModel(),
+                    viewModel = recipesViewModel,
                     navController = navController
                 )
             }
