@@ -1,6 +1,7 @@
 package com.example.appshop.viewmodel
 
 import android.util.Log
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.appshop.db.repository.ProductRepository
@@ -26,6 +27,7 @@ class ProductViewModel : ViewModel() {
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
 
     init {
         Log.d("ProductViewModel", "INIT DEL VIEWMODEL EJECUTADO")

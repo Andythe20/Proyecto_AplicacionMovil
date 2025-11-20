@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetroFitInstance {
     // 10.0.2.2 es la IP especial que usa el emulador de Android para referirse al localhost
-    private const val BASE_URL = "http://107.22.181.238/api/v1/"
+    private const val BASE_URL = "http://34.204.118.73/api/v1/"
 
     val api: IApiService by lazy {
         // Crear el interceptor
