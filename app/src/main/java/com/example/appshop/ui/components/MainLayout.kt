@@ -1,20 +1,23 @@
 package com.example.appshop.ui.components
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cake
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.appshop.ui.theme.DarkChocolate
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,6 +25,7 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import com.example.appshop.ui.theme.PacificoFontFamily
 import com.example.appshop.ui.theme.LatoFontFamily
+import com.example.appshop.ui.theme.SoftPink
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,6 +50,8 @@ fun MainLayout(
     )
 
 
+    val iconColor = if (isSystemInDarkTheme()) SoftPink else DarkChocolate
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -57,7 +63,7 @@ fun MainLayout(
                     contentAlignment = Alignment.TopEnd
                 ) {
                     IconButton(onClick = { scope.launch { drawerState.close() } }) {
-                        Icon(Icons.Default.Close, contentDescription = "Cerrar menú")
+                        Icon(Icons.Default.Close, contentDescription = "Cerrar menú",)
                     }
                 }
                 Text(
@@ -71,13 +77,24 @@ fun MainLayout(
                     label = { Text(
                         "Inicio",
                         style = TextStyle(fontFamily = LatoFontFamily)) },
-                    icon = { Icon(Icons.Default.Home, contentDescription = null) },
+                    icon = {
+                        Icon(
+                            Icons.Default.Home,
+                            contentDescription = null,
+                            tint = iconColor
+                        ) },
                     selected = false,
                     onClick = { scope.launch { drawerState.close() }; navController.navigate("home") }
                 )
+
                 NavigationDrawerItem(
                     label = { Text("Carrito", style = TextStyle(fontFamily = LatoFontFamily)) },
-                    icon = { Icon(Icons.Default.ShoppingCart, contentDescription = null) },
+                    icon = {
+                        Icon(
+                            Icons.Default.ShoppingCart,
+                            contentDescription = null,
+                            tint = iconColor
+                        ) },
                     selected = false,
                     onClick = { scope.launch { drawerState.close() }; navController.navigate("cart") }
                 )
@@ -86,7 +103,12 @@ fun MainLayout(
                     label = {
                         Text("Mi perfil", style = TextStyle(fontFamily = LatoFontFamily))
                     },
-                    icon = { Icon(Icons.Default.Person, contentDescription = null) },
+                    icon = {
+                        Icon(
+                            Icons.Default.Person,
+                            contentDescription = null,
+                            tint = iconColor
+                        ) },
                     selected = false,
                     onClick = { scope.launch { drawerState.close() }; navController.navigate("createProfile") }
                 )
@@ -95,9 +117,28 @@ fun MainLayout(
                     label = {
                         Text("Productos", style = TextStyle(fontFamily = LatoFontFamily))
                     },
-                    icon = { Icon(Icons.Default.Info, contentDescription = null) },
+                    icon = {
+                        Icon(
+                            Icons.Default.Cake,
+                            contentDescription = null,
+                            tint = iconColor
+                        ) },
                     selected = false,
                     onClick = { scope.launch { drawerState.close() }; navController.navigate("products") }
+                )
+
+                NavigationDrawerItem(
+                    label = {
+                        Text("Recetas", style = TextStyle(fontFamily = LatoFontFamily))
+                    },
+                    icon = {
+                        Icon(
+                            Icons.Default.Receipt,
+                            contentDescription = null,
+                            tint = iconColor
+                        ) },
+                    selected = false,
+                    onClick = { scope.launch { drawerState.close() }; navController.navigate("recipeSearch") }
                 )
 
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))

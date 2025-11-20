@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import com.example.appshop.model.Product
 import com.example.appshop.network.NetworkMonitor
 import com.example.appshop.ui.components.ProductCard
+import com.example.appshop.viewmodel.CartViewModel
 import com.example.appshop.viewmodel.ProductViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -31,9 +32,8 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductListScreen(
-    modifier: Modifier = Modifier,
     viewModel: ProductViewModel = viewModel(),
-    navController: NavController
+    cartViewModel: CartViewModel
 ) {
     val products by viewModel.products.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
@@ -109,7 +109,7 @@ fun ProductListScreen(
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
-                ProductListContent(products, onEndReached = { viewModel.refreshProducts()})
+                ProductListContent(products, onEndReached = { viewModel.refreshProducts()}, cartViewModel = cartViewModel)
             }
 
             AnimatedVisibility(
@@ -182,7 +182,8 @@ fun EmptyState(
 @Composable
 fun ProductListContent(
     products: List<Product>,
-    onEndReached: () -> Unit
+    onEndReached: () -> Unit,
+    cartViewModel : CartViewModel
 ) {
     val listState = rememberLazyListState()
 
@@ -204,7 +205,10 @@ fun ProductListContent(
         item { Spacer(modifier = Modifier.height(16.dp)) }
 
         items(products) { product ->
-            ProductCard(product)
+            ProductCard(
+                product = product,
+                onAddCart = { cartViewModel.agregarProducto(product) }
+            )
         }
 
         item {

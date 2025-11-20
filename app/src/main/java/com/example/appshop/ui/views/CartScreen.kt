@@ -5,6 +5,8 @@ package com.example.appshop.ui.views
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,29 +28,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.example.appshop.R // Asegúrate de importar tu R
-
-// Modelo de datos simple para ejemplo de la vista
-data class CartItem(
-    val idProd: Int,
-    val nombre: String,
-    val precio: Int,
-    var cantidad: Int,
-    val imageResId: Int // Usando ID de recurso para el ejemplo
-)
+import com.example.appshop.model.Product
+import com.example.appshop.viewmodel.CartViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CartScreen() {
-    // --- DATOS DE EJEMPLO ---
-    // En una app real, esto vendría de un *ViewModel*
-    val listaProductos = remember {
-        mutableStateListOf(
-            CartItem(1, "Flan de Vainilla", 3200, 1, R.drawable.flan_vainilla),
-            CartItem(2, "Flan de Chocolate", 1400, 2, R.drawable.flan_chocolate),
-            CartItem(3, "Flan de Caramelo", 2500, 1, R.drawable.flan_caramelo)
-        )
-    }
+fun CartScreen(cartViewModel: CartViewModel) {
+    val productosEnCarrito by cartViewModel.productosEnCarrito.collectAsState()
+    val total by cartViewModel.total.collectAsState()
 
     Scaffold(
         topBar = {
@@ -61,7 +51,7 @@ fun CartScreen() {
         }
     ) { paddingValues ->
         // Para cuando el carrito este vacio
-        if (listaProductos.isEmpty()) {
+        if (productosEnCarrito.isEmpty()) {
             EmptyCartView(modifier = Modifier.padding(paddingValues))
         } else {
             val scrollState = rememberScrollState()
@@ -73,23 +63,22 @@ fun CartScreen() {
                     .verticalScroll(scrollState) // Hacemos que toda la columna sea desplazable
             ) {
                 // Lista de items del carrito
-                Column(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(1f) // Esto asegura que la lista ocupe el espacio y el resumen quede abajo
+                        .padding(horizontal = 16.dp)
                 ) {
-                    // Recorremos cada
-                    listaProductos.forEach{ item ->
+                    // Recorremos el mapa que viene del viewModel
+                    items(productosEnCarrito.toList()){ (product, cantidad) ->
                         CartItemCard(
-                            item = item,
+                            item = product,
+                            cantidad = cantidad,
                             onQuantityChange = { newQuantity ->
-                                // Lógica para actualizar la cantidad
-                                val index = listaProductos.indexOf(item)
-                                if (index != -1) {
-                                    listaProductos[index] = item.copy(cantidad = newQuantity.coerceAtLeast(1))
-                                }
+                                cartViewModel.cambiarCantidad(product, newQuantity)
                             },
                             onDelete = {
                                 // Lógica para eliminar el item
-                                listaProductos.remove(item)
+                                cartViewModel.eliminarProducto(product)
                             }
                         )
                         Spacer(modifier = Modifier.height(12.dp))
@@ -97,7 +86,7 @@ fun CartScreen() {
                 }
 
                 // Resumen y botón de pago
-                OrderSummary(items = listaProductos)
+                OrderSummary(total)
             }
         }
     }
@@ -105,8 +94,9 @@ fun CartScreen() {
 
 @Composable
 fun CartItemCard(
-    item: CartItem,
-    onQuantityChange: (Int) -> Unit,
+    item: Product,
+    cantidad: Int,
+    onQuantityChange : (Int) -> Unit,
     onDelete: () -> Unit
 ) {
     Card(
@@ -118,8 +108,8 @@ fun CartItemCard(
             modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(id = item.imageResId),
+            AsyncImage(
+                model = item.url,
                 contentDescription = item.nombre,
                 modifier = Modifier
                     .size(80.dp)
@@ -134,7 +124,7 @@ fun CartItemCard(
                 Text(text = String.format("$ ${item.precio}"), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Medium)
                 Spacer(modifier = Modifier.height(8.dp))
                 QuantitySelector(
-                    quantity = item.cantidad,
+                    quantity = cantidad,
                     onQuantityChange = onQuantityChange
                 )
             }
@@ -177,11 +167,7 @@ fun QuantitySelector(
 
 // Calcular total, subtotal y costo de envio
 @Composable
-fun OrderSummary(items: List<CartItem>) {
-    val subtotal = items.sumOf { it.precio * it.cantidad }
-    val costoEnvio = if (subtotal > 0) 5000 else 0
-    val total = subtotal + costoEnvio
-
+fun OrderSummary(total: Int) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -198,24 +184,24 @@ fun OrderSummary(items: List<CartItem>) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text("Subtotal", color = Color.Gray)
-                Text(String.format("$ $subtotal"), fontWeight = FontWeight.Medium)
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text("Envío", color = Color.Gray)
-                Text(String.format("$ $costoEnvio"), fontWeight = FontWeight.Medium)
-            }
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth(),
+//                horizontalArrangement = Arrangement.SpaceBetween
+//            ) {
+//                Text("Subtotal", color = Color.Gray)
+//                Text(String.format("$ $subtotal"), fontWeight = FontWeight.Medium)
+//            }
+//            Spacer(modifier = Modifier.height(8.dp))
+//
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth(),
+//                horizontalArrangement = Arrangement.SpaceBetween
+//            ) {
+//                Text("Envío", color = Color.Gray)
+//                Text(String.format("$ $costoEnvio"), fontWeight = FontWeight.Medium)
+//            }
 
             // Dibuja una linea horizontal
             HorizontalDivider(
