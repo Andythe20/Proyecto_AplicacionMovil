@@ -43,4 +43,27 @@ class RecipesViewModel(
             }
         }
     }
+
+
+    fun searchRandom(){
+        viewModelScope.launch {
+            state = state.copy(isLoading = true, error = null)
+            val result = repository.searchRandomRecipes()
+            when {
+                result.isSuccess -> {
+                    state = state.copy(
+                        recipes = result.getOrDefault(emptyList()),
+                        isLoading = false
+                    )
+                }
+
+                result.isFailure -> {
+                    state = state.copy(
+                        error = result.exceptionOrNull()?.message,
+                        isLoading = false
+                    )
+                }
+            }
+        }
+    }
 }

@@ -21,4 +21,19 @@ class SpoonacularRepository(
             Result.failure(e)
         }
     }
+
+    suspend fun searchRandomRecipes(): Result<List<SpoonacularRecipe>>{
+        return try {
+            val response = api.randomRecipes()
+            if (response.isSuccessful) {
+                val recipes = response.body()?.results ?: emptyList()
+                Result.success(recipes)
+            } else {
+                Result.failure(Exception("API error: ${response.code()} - ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+
+    }
 }

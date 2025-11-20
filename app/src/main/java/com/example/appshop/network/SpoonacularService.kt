@@ -12,4 +12,9 @@ interface SpoonacularService {
         @Query("query") query: String,
         @Query("number") limit: Int = 10
     ): Response<SpoonacularSearchResponse>
+
+    @GET("recipes/random")
+    suspend fun randomRecipes(
+        @Query("number") limit: Int = 10
+    ): Response<SpoonacularSearchResponse>
 }

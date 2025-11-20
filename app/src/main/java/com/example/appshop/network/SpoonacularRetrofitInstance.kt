@@ -9,7 +9,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 object SpoonacularRetrofitInstance {
     private const val BASE_URL = "https://api.spoonacular.com/"
 
-    // Ideal: almacena el API KEY en local.properties, NO en el código.
     private const val API_KEY = "8ea918db1ac2451ca4840de0baff7186"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
