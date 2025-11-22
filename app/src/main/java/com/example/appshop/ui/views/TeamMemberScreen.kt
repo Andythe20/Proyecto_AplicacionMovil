@@ -2,7 +2,9 @@ package com.example.appshop.ui.views
 
 import android.content.Intent
 import android.net.Uri
+import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -30,9 +32,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.example.appshop.R
 
 data class TeamMember(
     val name: String,
@@ -158,12 +162,23 @@ fun TeamMemberScreen(
         item {
             Spacer(modifier = Modifier.height(36.dp))
 
-            Text(
-                "Duoc UC – Sede Viña del Mar, noviembre 2025\nDesarrollo de Aplicaciones Móviles",
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+
+                Text(
+                    "Duoc UC – Sede Viña del Mar, noviembre 2025\nDesarrollo de Aplicaciones Móviles",
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                // --- Aquí va tu pastel animado ---
+                BouncingCake()
+
+                Spacer(modifier = Modifier.height(32.dp))
+            }
         }
     }
 }
@@ -196,7 +211,41 @@ fun AnimatedLink(label: String, iconUrl: String, onClick: () -> Unit) {
             contentDescription = "$label Icon",
             modifier = Modifier.size(20.dp)
         )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(label, color = MaterialTheme.colorScheme.primary)
+
+    }
+}
+
+@Composable
+fun BouncingCake() {
+
+    var pressed by remember { mutableStateOf(false) }
+
+    // Movimiento vertical
+    val offset by animateDpAsState(
+        targetValue = if (pressed) (-20).dp else 0.dp,
+        animationSpec = tween(
+            durationMillis = 300,
+            easing = {
+                // efecto rebote
+                OvershootInterpolator(3f).getInterpolation(it)
+            }
+        ),
+        finishedListener = {
+            // vuelve automáticamente
+            pressed = false
+        }
+    )
+
+    Column(
+        modifier = Modifier
+            .offset(y = offset)
+            .clickable { pressed = true },
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.cake),
+            contentDescription = "Pastel Saltarín",
+            modifier = Modifier.size(80.dp)
+        )
     }
 }
