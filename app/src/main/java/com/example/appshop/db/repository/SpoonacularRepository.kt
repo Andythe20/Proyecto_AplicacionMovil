@@ -1,11 +1,12 @@
 package com.example.appshop.db.repository
 
 import com.example.appshop.model.spoonacular.SpoonacularRecipe
+import com.example.appshop.model.spoonacular.SpoonacularSummarizedRecipe
 import com.example.appshop.network.SpoonacularRetrofitInstance
 import com.example.appshop.network.SpoonacularService
 
 class SpoonacularRepository(
-    private val api: SpoonacularService = SpoonacularRetrofitInstance.api
+    private val api: SpoonacularService
 ) {
 
     suspend fun searchRecipes(query: String): Result<List<SpoonacularRecipe>> {
@@ -22,18 +23,17 @@ class SpoonacularRepository(
         }
     }
 
-    suspend fun searchRandomRecipes(): Result<List<SpoonacularRecipe>>{
+    suspend fun searchRecipeById(id: Int): Result<SpoonacularSummarizedRecipe?> {
         return try {
-            val response = api.randomRecipes()
+            val response = api.searchRecipeByID(id)
             if (response.isSuccessful) {
-                val recipes = response.body()?.results ?: emptyList()
-                Result.success(recipes)
+                val recipe = response.body()
+                Result.success(recipe)
             } else {
                 Result.failure(Exception("API error: ${response.code()} - ${response.message()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
         }
-
     }
 }

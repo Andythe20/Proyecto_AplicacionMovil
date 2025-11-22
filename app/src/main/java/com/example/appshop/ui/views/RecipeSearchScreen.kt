@@ -11,11 +11,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.twotone.ChevronRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -28,7 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.appshop.ui.components.RecipeItem
+import com.example.appshop.ui.components.RecipeCard
 import com.example.appshop.viewmodel.RecipesViewModel
 
 @Composable
@@ -37,12 +35,14 @@ fun RecipeSearchScreen(
     viewModel: RecipesViewModel,
     navController: NavController
 ) {
-    val state = viewModel.state
-
+    val state by viewModel.recipesListState
     var query by remember { mutableStateOf("") }
+
 
     Column(
         modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
         // Barra de búsqueda
         OutlinedTextField(
@@ -66,28 +66,29 @@ fun RecipeSearchScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Loading
-        if (state.isLoading) {
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+        Box(modifier = Modifier.fillMaxSize()) {
+            if (state.isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
-        }
 
-        // Error
-        state.error?.let { errorMsg ->
-            Text(
-                text = "Error: $errorMsg",
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(8.dp)
-            )
-        }
+            state.error?.let { errorMsg ->
+                Text(
+                    text = "Error: $errorMsg",
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
 
-        // Lista de recetas
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(state.recipes) { recipe ->
-                RecipeItem(recipe = recipe)
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                // Ahora puedes acceder a 'state.recipes' directamente
+                items(state.recipes) { recipe ->
+                    RecipeCard(
+                        recipe = recipe,
+                        onRecipeClick = { recipeId ->
+                            navController.navigate("recipeDetail/$recipeId")
+                        }
+                    )
+                }
             }
         }
     }

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,7 +26,10 @@ import coil.compose.AsyncImage
 import com.example.appshop.model.spoonacular.SpoonacularRecipe
 
 @Composable
-fun RecipeItem(recipe: SpoonacularRecipe) {
+fun RecipeCard(
+    recipe: SpoonacularRecipe,
+    onRecipeClick: (Int) -> Unit
+) {
 
     Card(
         modifier = Modifier
@@ -65,7 +67,8 @@ fun RecipeItem(recipe: SpoonacularRecipe) {
 
             // Boton para navegar a la receta completa
             IconButton(
-                onClick = {/* Navegar a la receta... */},
+                // enviamos el id de la receta
+                onClick = { onRecipeClick(recipe.id) },
                 modifier = Modifier.align(Alignment.CenterVertically)
             ) {
                 Icon(

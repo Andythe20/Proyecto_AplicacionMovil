@@ -19,12 +19,17 @@ import com.example.appshop.ui.auth.SignupScreen
 import com.example.appshop.ui.components.MainLayout
 import com.example.appshop.ui.views.HomeScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.example.appshop.db.AppDatabase
 import com.example.appshop.db.repository.UserRepository
+import com.example.appshop.model.spoonacular.SpoonacularRecipe
+import com.example.appshop.model.spoonacular.SpoonacularSummarizedRecipe
 import com.example.appshop.ui.SplashScreen
 import com.example.appshop.ui.views.CartScreen
 import com.example.appshop.ui.views.CreateProfileScreen
 import com.example.appshop.ui.views.ProductListScreen
+import com.example.appshop.ui.views.RecipeDetailScreen
 import com.example.appshop.ui.views.RecipeSearchScreen
 import com.example.appshop.viewmodel.AuthViewModel
 import com.example.appshop.viewmodel.AuthViewModelFactory
@@ -55,8 +60,10 @@ fun AppNavigation(modifier: Modifier = Modifier) {
     val repo = remember { UserRepository(db.userDao()) }
     val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(repo))
     val viewProductModel: ProductViewModel = viewModel()
+    val recipesViewModel: RecipesViewModel = viewModel()
 
-    NavHost(navController = navController, startDestination = "recipeSearch", modifier = modifier) {
+
+    NavHost(navController = navController, startDestination = "splash", modifier = modifier) {
 
         composable("splash") {
             SplashScreen(navController = navController)
@@ -133,8 +140,27 @@ fun AppNavigation(modifier: Modifier = Modifier) {
             MainLayout(navController) { padding ->
                 RecipeSearchScreen(
                     modifier = Modifier.padding(padding),
-                    viewModel = RecipesViewModel(),
+                    viewModel = recipesViewModel,
                     navController = navController
+                )
+            }
+        }
+
+        composable(
+            route = "recipeDetail/{recipeId}", // La ruta contiene un placeholder para el ID
+            arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            // Extraemos el ID de los argumentos de la ruta
+            val recipeId = backStackEntry.arguments?.getInt("recipeId")
+            requireNotNull(recipeId) { "El ID no puede ser nulo" }
+
+            MainLayout(navController) { padding ->
+                // Llamamos al nuevo Composable de detalle
+                RecipeDetailScreen(
+                    recipeId = recipeId,
+                    viewModel = recipesViewModel,
+                    navController = navController,
+                    modifier = Modifier.padding(padding)
                 )
             }
         }
