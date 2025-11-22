@@ -2,6 +2,11 @@ package com.example.appshop.ui.views
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,9 +19,15 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -57,79 +68,87 @@ fun TeamMemberScreen(
         items(team.size) { index ->
             val member = team[index]
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                elevation = CardDefaults.cardElevation(4.dp)
+            // --- Animación de aparición ---
+            var visible by remember { mutableStateOf(false) }
+            LaunchedEffect(Unit) {
+                visible = true
+            }
+
+            AnimatedVisibility(
+                visible = visible,
+                enter = fadeIn() + slideInVertically(initialOffsetY = { it / 4 }),
             ) {
-                Row(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    elevation = CardDefaults.cardElevation(6.dp)
                 ) {
 
-                    Image(
-                        painter = rememberAsyncImagePainter(member.photoUrl),
-                        contentDescription = member.name,
+                    Row(
                         modifier = Modifier
-                            .size(90.dp)
-                            .clip(CircleShape)
-                            .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape),
-                        contentScale = ContentScale.Crop
-                    )
-
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.Start
+                            .padding(16.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
                     ) {
 
-                        // NOMBRE
-                        Text(
-                            member.name,
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.titleMedium
+                        // --- Animación ligera en la imagen (zoom-in) ---
+                        var imageLoaded by remember { mutableStateOf(false) }
+
+                        val imageScale by animateFloatAsState(
+                            targetValue = if (imageLoaded) 1f else 0.85f,
+                            animationSpec = tween(600)
                         )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Image(
+                            painter = rememberAsyncImagePainter(
+                                model = member.photoUrl,
+                                onSuccess = { imageLoaded = true }
+                            ),
+                            contentDescription = member.name,
+                            modifier = Modifier
+                                .size(90.dp)
+                                .graphicsLayer(scaleX = imageScale, scaleY = imageScale)
+                                .clip(CircleShape)
+                                .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
 
-                        // ----- ICONO GITHUB -----
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.clickable {
-                                val browser = Intent(Intent.ACTION_VIEW, Uri.parse(member.github))
-                                context.startActivity(browser)
-                            }
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.Start
                         ) {
-                            Image(
-                                painter = rememberAsyncImagePainter("https://cdn-icons-png.flaticon.com/512/25/25231.png"),
-                                contentDescription = "GitHub Icon",
-                                modifier = Modifier.size(20.dp)
+
+                            Text(
+                                member.name,
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.titleMedium
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("GitHub", color = MaterialTheme.colorScheme.primary)
-                        }
 
-                        Spacer(modifier = Modifier.height(6.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                        // ----- ICONO LINKEDIN -----
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.clickable {
-                                val browser = Intent(Intent.ACTION_VIEW, Uri.parse(member.linkedin))
-                                context.startActivity(browser)
+                            // --- Animación para iconos (escala al tocar) ---
+                            AnimatedLink(
+                                label = "GitHub",
+                                iconUrl = "https://cdn-icons-png.flaticon.com/512/25/25231.png"
+                            ) {
+                                context.startActivity(
+                                    Intent(Intent.ACTION_VIEW, Uri.parse(member.github))
+                                )
                             }
-                        ) {
-                            Image(
-                                painter = rememberAsyncImagePainter("https://cdn-icons-png.flaticon.com/512/3536/3536505.png"),
-                                contentDescription = "LinkedIn Icon",
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("LinkedIn", color = MaterialTheme.colorScheme.primary)
+
+                            Spacer(modifier = Modifier.height(6.dp))
+
+                            AnimatedLink(
+                                label = "LinkedIn",
+                                iconUrl = "https://cdn-icons-png.flaticon.com/512/3536/3536505.png"
+                            ) {
+                                context.startActivity(
+                                    Intent(Intent.ACTION_VIEW, Uri.parse(member.linkedin))
+                                )
+                            }
                         }
                     }
                 }
@@ -146,5 +165,38 @@ fun TeamMemberScreen(
                 modifier = Modifier.padding(bottom = 16.dp)
             )
         }
+    }
+}
+
+
+@Composable
+fun AnimatedLink(label: String, iconUrl: String, onClick: () -> Unit) {
+    var pressed by remember { mutableStateOf(false) }
+
+    val scale by animateFloatAsState(
+        targetValue = if (pressed) 0.92f else 1f,
+        animationSpec = tween(150)
+    )
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .graphicsLayer(scaleX = scale, scaleY = scale)
+            .clickable(
+                onClickLabel = label,
+                onClick = {
+                    pressed = true
+                    onClick()
+                    pressed = false
+                }
+            )
+    ) {
+        Image(
+            painter = rememberAsyncImagePainter(iconUrl),
+            contentDescription = "$label Icon",
+            modifier = Modifier.size(20.dp)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(label, color = MaterialTheme.colorScheme.primary)
     }
 }
