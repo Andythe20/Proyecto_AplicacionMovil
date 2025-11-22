@@ -6,10 +6,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Cake
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.CoPresent
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Output
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -48,7 +51,6 @@ fun MainLayout(
         fontFamily = PacificoFontFamily,
         fontSize = 24.sp
     )
-
 
     val iconColor = if (isSystemInDarkTheme()) SoftPink else DarkChocolate
 
@@ -105,7 +107,7 @@ fun MainLayout(
                     },
                     icon = {
                         Icon(
-                            Icons.Default.Person,
+                            Icons.Default.AccountCircle,
                             contentDescription = null,
                             tint = iconColor
                         ) },
@@ -140,14 +142,35 @@ fun MainLayout(
                     selected = false,
                     onClick = { scope.launch { drawerState.close() }; navController.navigate("recipeSearch") }
                 )
+                NavigationDrawerItem(
+                    label = {
+                        Text("Créditos", style = TextStyle(fontFamily = LatoFontFamily))
+                    },
+                    icon = {
+                        Icon(
+                            Icons.Default.CoPresent,
+                            contentDescription = null,
+                            tint = iconColor
+                        )
+                    },
+                    selected = false,
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        navController.navigate("credits")
+                    }
+                )
 
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                 NavigationDrawerItem(
                     label = { Text("Cerrar sesión") },
-                    icon = { Icon(Icons.Default.Close, contentDescription = null) },
+                    icon = { Icon(Icons.Default.Output, contentDescription = null) },
                     selected = false,
                     onClick = { scope.launch { drawerState.close() }; showLogoutDialog = true }
                 )
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+                Text("v1.2.0", modifier = Modifier.padding(16.dp))
             }
         }
     ) {

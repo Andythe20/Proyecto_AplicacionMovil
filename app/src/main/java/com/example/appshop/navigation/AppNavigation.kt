@@ -11,26 +11,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.appshop.ui.auth.AuthScreen
-import com.example.appshop.ui.auth.SignupScreen
-import com.example.appshop.ui.components.MainLayout
-import com.example.appshop.ui.views.HomeScreen
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.appshop.db.AppDatabase
 import com.example.appshop.db.repository.UserRepository
-import com.example.appshop.model.spoonacular.SpoonacularRecipe
-import com.example.appshop.model.spoonacular.SpoonacularSummarizedRecipe
 import com.example.appshop.ui.SplashScreen
+import com.example.appshop.ui.auth.AuthScreen
+import com.example.appshop.ui.auth.SignupScreen
+import com.example.appshop.ui.components.MainLayout
 import com.example.appshop.ui.views.CartScreen
 import com.example.appshop.ui.views.CreateProfileScreen
+import com.example.appshop.ui.views.HomeScreen
 import com.example.appshop.ui.views.ProductListScreen
 import com.example.appshop.ui.views.RecipeDetailScreen
 import com.example.appshop.ui.views.RecipeSearchScreen
+import com.example.appshop.ui.views.TeamMember
+import com.example.appshop.ui.views.TeamMemberScreen
 import com.example.appshop.viewmodel.AuthViewModel
 import com.example.appshop.viewmodel.AuthViewModelFactory
 import com.example.appshop.viewmodel.CartViewModel
@@ -165,6 +165,33 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     viewModel = recipesViewModel,
                     navController = navController,
                     modifier = Modifier.padding(padding)
+                )
+            }
+        }
+
+        composable("credits") {
+            MainLayout(navController) { padding ->
+                TeamMemberScreen(
+                    team = listOf(
+                        TeamMember(
+                            name = "Andrés Ortega",
+                            photoUrl = "https://avatars.githubusercontent.com/u/132930876?v=4",
+                            github = "https://github.com/Andythe20",
+                            linkedin = "https://linkedin.com"
+                        ),
+                        TeamMember(
+                            name = "Luis Maulen",
+                            photoUrl = "https://avatars.githubusercontent.com/u/173817343?v=4",
+                            github = "https://github.com/L-Maulen",
+                            linkedin = "https://linkedin.com/"
+                        ),
+                        TeamMember(
+                            name = "Leonel Briones Palacios",
+                            photoUrl = "https://media.licdn.com/dms/image/v2/D4E03AQHG0bDbH2O6PA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1684172923928?e=1765411200&v=beta&t=01xU-KH0VJ5M1AvpIjyv9cEQyNd-3r4dlg6JbGRKJ0U",
+                            github = "https://github.com/jarodsmdev",
+                            linkedin = "https://www.linkedin.com/in/leonel-briones-palacios/"
+                        )
+                    )
                 )
             }
         }
