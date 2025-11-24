@@ -177,7 +177,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                             name = "Andrés Ortega",
                             photoUrl = "https://avatars.githubusercontent.com/u/132930876?v=4",
                             github = "https://github.com/Andythe20",
-                            linkedin = "https://linkedin.com"
+                            linkedin = "www.linkedin.com/in/andy-ortega-a97706284/"
                         ),
                         TeamMember(
                             name = "Luis Maulen",

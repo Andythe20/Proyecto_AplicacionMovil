@@ -73,8 +73,8 @@ fun SignupScreen(
     var contrasenna by remember { mutableStateOf("") }
     var contrasennaValidar by remember { mutableStateOf("") }
 
-// Si el valor es 'null' -> no hay error.
-// Si tiene un texto -> hay un error y ese es el mensaje a mostrar.
+    // Si el valor es 'null' -> no hay error.
+    // Si tiene un texto -> hay un error y ese es el mensaje a mostrar.
     var nombreError by remember { mutableStateOf<String?>(null) }
     var emailError by remember { mutableStateOf<String?>(null) }
     var contrasennaError by remember { mutableStateOf<String?>(null) }
@@ -294,7 +294,7 @@ fun SignupScreen(
                         contrasennaValidarError == null
 
                 if (esValido) {
-//                     Si todo esta correcto, se registra el usuario.
+                    // Si todo esta correcto, se registra el usuario.
                     viewModel.registerUser(nombre, email, contrasenna) { isSuccess, message ->
                         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                         if (isSuccess) {
