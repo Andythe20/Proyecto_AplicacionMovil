@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.androidx.compose.material3.window.size.class1)
     implementation(libs.androidx.runtime)
     implementation(libs.androidx.compose.animation.core)
+    testImplementation(libs.junit.jupiter)
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
 
