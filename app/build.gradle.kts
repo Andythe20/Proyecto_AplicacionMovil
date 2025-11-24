@@ -117,6 +117,9 @@ dependencies {
 
     //Mockk
     testImplementation("io.mockk:mockk:1.13.10")
+    // Coroutines test
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+
 
     //Compose UI Test
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.2")
@@ -127,3 +130,4 @@ dependencies {
         useJUnitPlatform()
     }
 }
+
