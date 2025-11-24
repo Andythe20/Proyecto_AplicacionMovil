@@ -10,9 +10,9 @@ class ProductRepository(private val apiService: IApiService) { // Ahora usa la c
             // Llama a la API. `response`
             val response = apiService.getProducts()
 
-            Log.d("ProductRepository", "Response code: ${response.code()}")
-            Log.d("ProductRepository", "Response message: ${response.message()}")
-            Log.d("ProductRepository", "Response isSuccessful: ${response.isSuccessful}")
+            //Log.d("ProductRepository", "Response code: ${response.code()}")
+            //Log.d("ProductRepository", "Response message: ${response.message()}")
+            //Log.d("ProductRepository", "Response isSuccessful: ${response.isSuccessful}")
 
             // Comprueba si la llamada fue exitosa
             if (response.isSuccessful) {
@@ -20,13 +20,13 @@ class ProductRepository(private val apiService: IApiService) { // Ahora usa la c
                 response.body()
             } else {
                 // El servidor respondió con un error
-                Log.e("ProductRepository", "ERROR HTTP: ${response.code()} - ${response.message()}")
-                Log.e("ProductRepository", "Error body: ${response.errorBody()?.string()}")
+                //Log.e("ProductRepository", "ERROR HTTP: ${response.code()} - ${response.message()}")
+                //Log.e("ProductRepository", "Error body: ${response.errorBody()?.string()}")
                 null
             }
         } catch (e: Exception) {
             // Hubo un error de red o conexión
-            Log.e("ProductRepository", "ERROR DE CONEXIÓN: ${e.message}", e)
+            //Log.e("ProductRepository", "ERROR DE CONEXIÓN: ${e.message}", e)
             null
         }
     }
