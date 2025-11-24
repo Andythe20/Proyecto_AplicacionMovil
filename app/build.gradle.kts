@@ -71,7 +71,6 @@ dependencies {
     implementation(libs.androidx.compose.material3.window.size.class1)
     implementation(libs.androidx.runtime)
     implementation(libs.androidx.compose.animation.core)
-    testImplementation(libs.junit.jupiter)
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
 
@@ -126,9 +125,9 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.2")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.2")
 
+    // Obligatorio para usar JUnit 5
+    tasks.withType<Test>().configureEach {
+        useJUnitPlatform()
+    }
 }
 
-// Obligatorio para usar JUnit 5
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
-}
