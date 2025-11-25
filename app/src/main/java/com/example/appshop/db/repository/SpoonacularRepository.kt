@@ -2,9 +2,9 @@ package com.example.appshop.db.repository
 
 import com.example.appshop.model.spoonacular.SpoonacularRecipe
 import com.example.appshop.model.spoonacular.SpoonacularSummarizedRecipe
-import com.example.appshop.network.SpoonacularRetrofitInstance
 import com.example.appshop.network.SpoonacularService
 
+// Mediador entre las fuentes de datos y el ViewModel
 class SpoonacularRepository(
     private val api: SpoonacularService
 ) {

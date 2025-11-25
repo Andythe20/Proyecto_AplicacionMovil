@@ -6,7 +6,9 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-// Objeto singleton para crear y configurar una instancia de Retrofit para la API de Spoonacular.
+/** Objeto singleton para crear y configurar una instancia de Retrofit para la API de Spoonacular.
+* Crea y configura un cliente de red que se encarga de las peticiones a la API.
+*/
 object SpoonacularRetrofitInstance {
 
     // URL base de la API de Spoonacular.

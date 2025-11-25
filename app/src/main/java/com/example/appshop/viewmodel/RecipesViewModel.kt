@@ -25,19 +25,23 @@ data class RecipeDetailState(
     val error: String? = null
 )
 
+/**
+ * Almacena toda la informacion que la pantalla va a mostrar (datos, loading, error), evitando
+ * que se tengan que volver a cargar*/
 class RecipesViewModel() : ViewModel() {
 
     private val repository: SpoonacularRepository
 
     // --- Propiedades para el estado del detalle de la receta ---
     private val _recipeDetailState = mutableStateOf(RecipeDetailState())
-    val recipeDetailState: State<RecipeDetailState> = _recipeDetailState // Esta línea ahora compilará
+    val recipeDetailState: State<RecipeDetailState> = _recipeDetailState
 
     // --- Propiedades para el estado de la lista de recetas ---
     private val _recipesListState = mutableStateOf(RecipesState())
-    val recipesListState: State<RecipesState> = _recipesListState // Esta línea también compilará
+    val recipesListState: State<RecipesState> = _recipesListState
 
 
+    // Se ejecuta una sola vez cuando el viewmodel es creado
     init {
         val api: SpoonacularService = SpoonacularRetrofitInstance.api
         repository = SpoonacularRepository(api)
@@ -46,8 +50,13 @@ class RecipesViewModel() : ViewModel() {
 
 
     fun search(query: String) {
+        /**
+         * viewModelScope.launch: Lanza una corrutina atada al ciclo de vida del viewModel.
+         * Si el viewModel es destruido, la corrutina se cancela automáticamente.*/
         viewModelScope.launch {
+            // Actualiza el estado a "Cargando"
             _recipesListState.value = _recipesListState.value.copy(isLoading = true, error = null)
+
             val result = repository.searchRecipes(query)
             when {
                 result.isSuccess -> {

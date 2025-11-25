@@ -9,8 +9,9 @@ import retrofit2.http.Query
 
 interface SpoonacularService {
 
-    @GET("recipes/complexSearch")
+    @GET("recipes/complexSearch") // añade el endpoint a la URL base
     suspend fun searchRecipes(
+        // Parametros de la consulta
         @Query("query") query: String,
         @Query("number") limit: Int = 10
     ): Response<SpoonacularSearchResponse>
