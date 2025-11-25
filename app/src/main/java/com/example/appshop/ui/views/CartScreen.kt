@@ -2,7 +2,6 @@
 
 package com.example.appshop.ui.views
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,6 +17,8 @@ import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,17 +29,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.example.appshop.R // Asegúrate de importar tu R
+import com.example.appshop.R
 import com.example.appshop.model.Product
 import com.example.appshop.viewmodel.CartViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(cartViewModel: CartViewModel) {
+    // Recoge los productos del viewModel
     val productosEnCarrito by cartViewModel.productosEnCarrito.collectAsState()
+
+    // Recoge el total del viewModel
     val total by cartViewModel.total.collectAsState()
+
 
     Scaffold(
         topBar = {
@@ -53,7 +57,7 @@ fun CartScreen(cartViewModel: CartViewModel) {
         // Para cuando el carrito este vacio
         if (productosEnCarrito.isEmpty()) {
             EmptyCartView(modifier = Modifier.padding(paddingValues))
-        } else {
+        } else{
             val scrollState = rememberScrollState()
 
             Column(
@@ -68,14 +72,20 @@ fun CartScreen(cartViewModel: CartViewModel) {
                         .weight(1f) // Esto asegura que la lista ocupe el espacio y el resumen quede abajo
                         .padding(horizontal = 16.dp)
                 ) {
-                    // Recorremos el mapa que viene del viewModel
-                    items(productosEnCarrito.toList()){ (product, cantidad) ->
+
+                    // Convertimos el mapa a una lista de pares (Producto, Cantidad)
+                    items(productosEnCarrito.toList()){ (product, cantidad) -> // Extraemos producto y cantidad de cada item
+                    // items, por cada elemento de la lista, creara su card
                         CartItemCard(
                             item = product,
                             cantidad = cantidad,
+
+                            // Cambiar cantidad de un producto
                             onQuantityChange = { newQuantity ->
                                 cartViewModel.cambiarCantidad(product, newQuantity)
                             },
+
+                            // Eliminar un producto del carrito
                             onDelete = {
                                 // Lógica para eliminar el item
                                 cartViewModel.eliminarProducto(product)
@@ -85,8 +95,14 @@ fun CartScreen(cartViewModel: CartViewModel) {
                     }
                 }
 
-                // Resumen y botón de pago
-                OrderSummary(total)
+                // Resumen final de pedido
+                OrderSummary(
+                    total,
+                    onCheckoutClicked = {
+                        // Al pagar, se vacia
+                        cartViewModel.vaciarCarrito()
+                    }
+                    )
             }
         }
     }
@@ -121,12 +137,15 @@ fun CartItemCard(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = item.nombre, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                Text(text = String.format("$ ${item.precio}"), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Medium)
+                Text(text = ("$ ${item.precio}"), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Medium)
                 Spacer(modifier = Modifier.height(8.dp))
+
+                // Control de suma/resta cantidad
                 QuantitySelector(
                     quantity = cantidad,
                     onQuantityChange = onQuantityChange
                 )
+
             }
 
             IconButton(onClick = onDelete) {
@@ -167,7 +186,36 @@ fun QuantitySelector(
 
 // Calcular total, subtotal y costo de envio
 @Composable
-fun OrderSummary(total: Int) {
+fun OrderSummary(
+    total: Int,
+    onCheckoutClicked: () -> Unit
+) {
+    var mostrarDialogo by remember { mutableStateOf(false) }
+
+    // Si el estado es verdadero, mostramos el AlertDialog
+    if (mostrarDialogo) {
+        AlertDialog(
+            onDismissRequest = {
+                mostrarDialogo = false
+                onCheckoutClicked() // Vacía el carrito si se toca fuera
+            },
+            title = {
+                Text("¡Pago Confirmado!", fontWeight = FontWeight.Bold)
+            },
+            text = {
+                Text("Gracias por tu compra. Esperamos que tu pedido llegue pronto.")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        mostrarDialogo = false
+                    }
+                ) {
+                    Text("Aceptar")
+                }
+            }
+        )
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -184,25 +232,6 @@ fun OrderSummary(total: Int) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-//            Row(
-//                modifier = Modifier
-//                    .fillMaxWidth(),
-//                horizontalArrangement = Arrangement.SpaceBetween
-//            ) {
-//                Text("Subtotal", color = Color.Gray)
-//                Text(String.format("$ $subtotal"), fontWeight = FontWeight.Medium)
-//            }
-//            Spacer(modifier = Modifier.height(8.dp))
-//
-//            Row(
-//                modifier = Modifier
-//                    .fillMaxWidth(),
-//                horizontalArrangement = Arrangement.SpaceBetween
-//            ) {
-//                Text("Envío", color = Color.Gray)
-//                Text(String.format("$ $costoEnvio"), fontWeight = FontWeight.Medium)
-//            }
-
             // Dibuja una linea horizontal
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 16.dp),
@@ -215,16 +244,18 @@ fun OrderSummary(total: Int) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text("Total", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                Text(String.format("$ $total"), fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(("$ $total"), fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { /* Navegar al checkout */ },
+                onClick = {
+                    mostrarDialogo = true
+                },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Text("PROCEDER AL PAGO", modifier = Modifier.padding(8.dp))
+                Text("Pagar pedido", modifier = Modifier.padding(8.dp))
             }
         }
     }

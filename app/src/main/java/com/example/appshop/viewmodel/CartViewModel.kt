@@ -57,6 +57,11 @@ class CartViewModel : ViewModel() {
         recalcularTotal()
     }
 
+    fun vaciarCarrito() {
+        _productosEnCarrito.value = mutableMapOf()
+        recalcularTotal()
+    }
+
     // Recalcula el total y actualiza el StateFlow
     private fun recalcularTotal() {
         val nuevoTotal = _productosEnCarrito.value.entries.sumOf { (product, quantity) ->

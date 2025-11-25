@@ -75,12 +75,12 @@ class CartViewModelTest {
             url = ""
         )
 
-        // ACCIÓN (When)
+        // ACCIÓN
         viewModel.agregarProducto(productoDePrueba1)
         viewModel.agregarProducto(productoDePrueba2)
 
 
-        // RESULTADO (Then)
+        // RESULTADO
         val carritoActual = viewModel.productosEnCarrito.value
         carritoActual.shouldHaveSize(2)
         carritoActual[productoDePrueba1] shouldBe 1
@@ -91,14 +91,11 @@ class CartViewModelTest {
     @Test
     @DisplayName("test 3: al eliminar un producto, el carrito debe quedar vacío")
     fun `test 3, al eliminar un producto el carrito queda vacio`() = runTest {
-        // Given
         val productoDePrueba = Product(codigo="001", nombre="Flan", descripcion="", categoria="", precio=5, url="")
         viewModel.agregarProducto(productoDePrueba)
 
-        // When
         viewModel.eliminarProducto(productoDePrueba)
 
-        // Then
         viewModel.productosEnCarrito.value.shouldBeEmpty()
         viewModel.total.value shouldBe 0
     }
@@ -106,14 +103,11 @@ class CartViewModelTest {
     @Test
     @DisplayName("test 4: al cambiar la cantidad, el carrito y el total deben actualizarse")
     fun `test 4, al cambiar la cantidad el carrito y total se actualizan`() = runTest {
-        // Given
         val productoDePrueba = Product(codigo="001", nombre="Flan", descripcion="", categoria="", precio=5, url="")
         viewModel.agregarProducto(productoDePrueba) // Ahora hay 1 flan, total = 5
 
-        // When
         viewModel.cambiarCantidad(productoDePrueba, 3)
 
-        // Then
         viewModel.productosEnCarrito.value[productoDePrueba] shouldBe 3
         viewModel.total.value shouldBe 15
     }
