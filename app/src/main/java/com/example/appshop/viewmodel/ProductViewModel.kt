@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class ProductViewModel : ViewModel() {
     // CREA UNA INSTANCIA DEL REPOSITORIO
-    // El repositorio necesita el servicio de la API, que lo obtenemos de RetrofitInstance.
+    // El repositorio necesita el servicio de la API, que lo obtenemos de RetrofitInstance
     private val repository: ProductRepository
 
     // ESTADOS PARA LOS PRODUCTOS Y EL ESTADO DE CARGA
@@ -30,8 +30,6 @@ class ProductViewModel : ViewModel() {
 
 
     init {
-        Log.d("ProductViewModel", "INIT DEL VIEWMODEL EJECUTADO")
-
         // Inicializamos el repositorio aquí
         val apiService: IApiService = RetroFitInstance.api
         repository = ProductRepository(apiService)
@@ -48,17 +46,11 @@ class ProductViewModel : ViewModel() {
                 // Pide los productos al repositorio
                 val productList = repository.getProducts()
 
-                Log.d("ProductViewModel", "Productos desde API: $productList")
-                Log.d("ProductViewModel", "Cantidad: ${productList?.size}")
-
-                //Log.d("ProductViewModel", "Respuesta recibida: ${productList != null}")
-                //Log.d("ProductViewModel", "Cantidad de productos: ${productList?.size ?: 0}")
                 if (productList != null) {
                     // Actualiza la lista con los datos de la API
                     _products.value = productList
                 } else {
                     // El repositorio devolvió null, lo que significa que hubo un error
-                    // Log para logcat
                     Log.e("ProductViewModel", "La respuesta de la API fue nula o fallida.")
                     _products.value = emptyList() // Asegurarse de que la lista quede vacía
                     _errorMessage.value = "No se pudo obtener los productos."
@@ -77,9 +69,10 @@ class ProductViewModel : ViewModel() {
     fun refreshProducts() {
         viewModelScope.launch {
             _isRefreshing.value = true
+
             try {
                 val productList = repository.getProducts()
-                //Log.d("ProductViewModel", "Refresh - Productos desde API: ${productList?.size}")
+
                 if (productList != null) {
                     _products.value = productList
                 } else {
